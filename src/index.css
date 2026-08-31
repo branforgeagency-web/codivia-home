@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: 'ss01' on, 'cv01' on;
+}
+
+::selection {
+  background: #F26722;
+  color: #141210;
+}
+
+/* Sharp-edged focus ring instead of glow, for accessibility */
+:focus-visible {
+  outline: 2px solid #F26722;
+  outline-offset: 3px;
+}
+
+.font-mono-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Architectural hairline border utility */
+.hairline {
+  border-color: rgba(245, 241, 236, 0.12);
+}
+
+.hairline-accent {
+  border-color: rgba(242, 103, 34, 0.5);
+}
+
+/* Glass panel: sharp contrast, not glow */
+.glass-panel {
+  background: rgba(245, 241, 236, 0.04);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 241, 236, 0.14);
+}
+
+.glass-panel-light {
+  background: rgba(20, 18, 16, 0.04);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(20, 18, 16, 0.1);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

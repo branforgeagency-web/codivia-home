@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CODIVIA — Live Chart Medical Coding Software</title>
+  <meta name="description" content="Master medical coding across 22 clinical departments with de-identified EHR encounters, real-time ICD-10-CM / CPT-4 / HCPCS validation, and placement-ready certification tracks." />
+  <link rel="icon" type="image/png" href="/codivia-mark.png" />
+
+  <!-- Google Fonts: Plus Jakarta Sans, JetBrains Mono, Instrument Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS Reset & Core Theme Variables
+       ========================================================================== */
+    :root {
+      --color-charcoal: #141210;
+      --color-charcoal-soft: #1D1A17;
+      --color-charcoal-card: #24201D;
+      --color-bone: #F5F1EC;
+      --color-tint: #FDEBD9;
+      --color-accent: #F26722;
+      --color-accent-bright: #FF7F3F;
+      --color-accent-dim: #C7551C;
+      --color-bg-light: #FAF6F2;
+      --color-border-light: rgba(20, 18, 16, 0.1);
+      --color-border-dark: rgba(245, 241, 236, 0.12);
+
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: var(--font-sans);
+      background-color: var(--color-charcoal);
+      color: var(--color-bone);
+    }
+
+    body {
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container Utility */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    /* ==========================================================================
+       1. Fullscreen Intro Video Overlay Gate
+       ========================================================================== */
+    #intro-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background-color: #0d0c0b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    #intro-gate.hidden-gate {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.02);
+    }
+
+    .intro-video-element {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-width: 100vw;
+      min-height: 100vh;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .intro-header-controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+    }
+
+    .rect-btn-sound {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-bone);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .rect-btn-sound:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .equalizer-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      width: 14px;
+      padding-bottom: 2px;
+    }
+
+    .equalizer-bars span {
+      width: 2.5px;
+      border-radius: 2px;
+      background: var(--color-accent);
+      transition: all 0.2s ease;
+    }
+
+    .equalizer-bar-1 { animation: eqBounce1 0.8s ease-in-out infinite; }
+    .equalizer-bar-2 { animation: eqBounce2 0.9s ease-in-out infinite; }
+    .equalizer-bar-3 { animation: eqBounce3 0.75s ease-in-out infinite; }
+
+    .equalizer-bars.muted span {
+      background: rgba(245, 241, 236, 0.4);
+      height: 4px !important;
+      animation: none !important;
+    }
+
+    .rect-btn-skip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-accent);
+      background: var(--color-accent);
+      padding: 0.5rem 1.25rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .rect-btn-skip:hover {
+      background: var(--color-accent-dim);
+    }
+
+    /* ==========================================================================
+       2. Hero Section
+       ========================================================================== */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-bg-light);
+      color: var(--color-charcoal);
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .hero-bg-pattern {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-bg-pattern img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+
+    .hero-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(255,255,255,0.75), rgba(255,255,255,0.3), rgba(255,255,255,0.5));
+    }
+
+    .hero-aurora-1 {
+      position: absolute;
+      top: -6rem;
+      right: -5%;
+      width: 600px;
+      height: 600px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(242, 103, 34, 0.2), transparent 70%);
+      filter: blur(100px);
+    }
+
+    .hero-aurora-2 {
+      position: absolute;
+      bottom: -6rem;
+      left: -5rem;
+      width: 500px;
+      height: 500px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(253, 235, 217, 0.7), transparent 70%);
+      filter: blur(100px);
+    }
+
+    /* Navbar */
+    .floating-navbar-container {
+      position: relative;
+      z-index: 30;
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .floating-navbar {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 9999px;
+      border: 1px solid rgba(20, 18, 16, 0.1);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      padding: 0.6rem 1rem;
+      box-shadow: 0 10px 30px rgba(20, 18, 16, 0.04);
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(20, 18, 16, 0.8);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      color: var(--color-charcoal);
+      background: rgba(242, 103, 34, 0.08);
+    }
+
+    .nav-badge {
+      background: var(--color-charcoal);
+      color: var(--color-bone);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.1rem 0.4rem;
+      border-radius: 9999px;
+    }
+
+    .btn-start-free {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-bright));
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.6rem 1.4rem;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(242, 103, 34, 0.3);
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-start-free:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(242, 103, 34, 0.4);
+    }
+
+    .btn-secondary-white {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      border: 1px solid rgba(20, 18, 16, 0.2);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      color: var(--color-charcoal);
+      font-size: 0.875rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary-white:hover {
+      background: #fff;
+      border-color: var(--color-charcoal);
+    }
+
+    /* Hero Content Layout */
+    .hero-content-grid {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: center;
+      gap: 3rem;
+      padding: 3rem 1.5rem;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-content-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        padding: 4rem 2rem;
+      }
+    }
+
+    .hero-headline {
+      font-size: 2.75rem;
+      font-weight: 900;
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      color: var(--color-charcoal);
+    }
+
+    @media (min-width: 640px) {
+      .hero-headline { font-size: 3.75rem; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-headline { font-size: 4.8rem; }
+    }
+
+    .headline-gradient {
+      background: linear-gradient(90deg, var(--color-accent), #FF7F3F, #D94F0D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Ticker Strip */
+    .marquee-strip {
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      border-top: 1px solid var(--color-border-light);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 0.85rem 0;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+      white-space: nowrap;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: rgba(20, 18, 16, 0.6);
+      gap: 2.5rem;
+    }
+
+    /* ==========================================================================
+       3. Stats Counter Section
+       ========================================================================== */
+    #stats-section {
+      position: relative;
+      background: var(--color-charcoal);
+      color: var(--color-bone);
+      padding: 5rem 1.5rem;
+      border-bottom: 1px solid var(--color-border-dark);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      border-left: 2px solid rgba(242, 103, 34, 0.4);
+      padding-left: 1.5rem;
+    }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--color-bone);
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: rgba(245, 241, 236, 0.85);
+      margin-top: 0.5rem;
+    }
+
+    .stat-desc {
+      font-size: 0.8rem;
+      color: rgba(245, 241, 236, 0.5);
+      margin-top: 0.25rem;
+    }
+
+    /* ==========================================================================
+       4. 22 Departments Matrix Section (Alternating Side Layout)
+       ========================================================================== */
+    #departments {
+      position: relative;
+      background: #ffffff;
+      color: var(--color-charcoal);
+      padding: 6rem 1.5rem;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .dept-row {
+      margin: 0.5rem 0;
+      border-radius: 1.25rem;
+      border: 1px solid transparent;
+      padding: 0 1.25rem;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .dept-row:hover {
+      border: 1px solid rgba(20, 18, 16, 0.15);
+      background-color: rgba(20, 18, 16, 0.02);
+      padding: 0 4.5rem;
+    }
+
+    .dept-row.open {
+      border: 1px solid rgba(242, 103, 34, 0.4);
+      background-color: rgba(242, 103, 34, 0.03);
+      padding: 0 4.5rem;
+    }
+
+    .dept-header-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    /* Alternating Row Directions */
+    .dept-row-even .dept-header-btn {
+      text-align: left;
+    }
+
+    .dept-row-odd .dept-header-btn {
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .dept-icon-box {
+      width: 11.5rem;
+      height: 11.5rem;
+      flex-shrink: 0;
+      background: transparent;
+      padding: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    @media (min-width: 640px) {
+      .dept-icon-box {
+        width: 12.5rem;
+        height: 12.5rem;
+      }
+    }
+
+    .dept-cat-btn {
+      border: none;
+      background: transparent;
+      padding: 0.5rem 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(20, 18, 16, 0.7);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .dept-cat-btn:hover {
+      color: var(--color-charcoal);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .dept-cat-btn.active {
+      background: var(--color-accent);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(242, 103, 34, 0.25);
+    }
+
+    .cat-count {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.4rem;
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .dept-cat-btn.active .cat-count {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .dept-header-btn:hover .dept-icon-box {
+      transform: translateY(-8px) scale(1.05);
+    }
+
+    .dept-icon-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: all 0.3s ease;
+    }
+
+    .dept-header-btn:hover .dept-icon-box img {
+      filter: drop-shadow(0 20px 25px rgba(242, 103, 34, 0.2));
+    }
+
+    .dept-text-stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: transform 0.2s ease;
+    }
+
+    .dept-row-even .dept-text-stack {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .dept-row-odd .dept-text-stack {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .dept-index-num {
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--color-accent);
+    }
+
+    .dept-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--color-charcoal);
+      transition: color 0.2s ease;
+    }
+
+    .dept-header-btn:hover .dept-title {
+      color: var(--color-accent);
+    }
+
+    .dept-accordion-content {
+      display: none;
+      padding-bottom: 2rem;
+    }
+
+    .dept-row.open .dept-accordion-content {
+      display: block;
+    }
+
+    .code-suites-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .code-suites-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .code-card {
+      border-radius: 1rem;
+      border: 1px solid rgba(20, 18, 16, 0.1);
+      background: #fff;
+      padding: 1.25rem;
+      box-shadow: 0 4px 12px rgba(20, 18, 16, 0.02);
+    }
+
+    .code-badge-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.4rem;
+      background: rgba(242, 103, 34, 0.1);
+      color: var(--color-accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .code-range-val {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--color-charcoal);
+    }
+
+    /* ==========================================================================
+       5. 5-Step Journey Section
+       ========================================================================== */
+    #journey {
+      position: relative;
+      background: var(--color-charcoal);
+      color: var(--color-bone);
+      padding: 6rem 1.5rem;
+      border-bottom: 1px solid var(--color-border-dark);
+    }
+
+    .timeline-step {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .step-icon-badge {
+      width: 3.5rem;
+      height: 3.5rem;
+      flex-shrink: 0;
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-accent);
+    }
+
+    /* ==========================================================================
+       6. Pricing & FAQ Section
+       ========================================================================== */
+    #pricing, #faq {
+      position: relative;
+      background: var(--color-charcoal);
+      color: var(--color-bone);
+      padding: 6rem 1.5rem;
+      border-bottom: 1px solid var(--color-border-dark);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--color-border-dark);
+      padding: 1.5rem 0;
+    }
+
+    .faq-question-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      color: var(--color-bone);
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .faq-answer {
+      display: none;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: rgba(245, 241, 236, 0.7);
+      line-height: 1.6;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      background: #0d0c0b;
+      color: var(--color-bone);
+      padding: 4rem 1.5rem 2rem;
+      border-top: 1px solid var(--color-border-dark);
+    }
+
+    /* Keyframes */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes eqBounce1 {
+      0%, 100% { height: 4px; }
+      50% { height: 12px; }
+    }
+
+    @keyframes eqBounce2 {
+      0%, 100% { height: 14px; }
+      50% { height: 6px; }
+    }
+
+    @keyframes eqBounce3 {
+      0%, 100% { height: 8px; }
+      50% { height: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. Video Banner Section (1st Section)
+       ========================================================================== -->
+  <section id="banner-section" style="position: relative; height: 100vh; width: 100%; overflow: hidden; background-color: #0d0c0b; color: var(--color-bone);">
+    <div class="intro-header-controls" style="position: absolute; top: 0; left: 0; right: 0; z-index: 40; padding: 1.25rem 2rem;">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(0, 0, 0, 0.8); padding: 0.5rem 1.25rem; backdrop-filter: blur(24px); box-shadow: 0 12px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08), 0 0 24px rgba(242,103,34,0.2); color: var(--color-bone);">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <img src="/codivia-logo-dark.png" alt="CODIVIA" height="32" />
+        </div>
+
+        <nav style="display: flex; align-items: center; gap: 0.5rem;" class="nav-links">
+          <a href="#departments" class="nav-item" style="color: rgba(245,241,236,0.85);">
+            <span>Departments</span>
+            <span class="nav-badge" style="background: var(--color-accent); color: #fff;">22</span>
+          </a>
+          <a href="#journey" class="nav-item" style="color: rgba(245,241,236,0.85);">How it works</a>
+          <a href="#demo" class="nav-item" style="color: rgba(245,241,236,0.85);">
+            <span>Try a code</span>
+            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: var(--color-accent); box-shadow: 0 0 8px #F26722;"></span>
+          </a>
+          <a href="#pricing" class="nav-item" style="color: rgba(245,241,236,0.85);">Pricing</a>
+          <a href="#faq" class="nav-item" style="color: rgba(245,241,236,0.85);">FAQ</a>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <a href="#pricing" class="btn-start-free" style="text-decoration: none; padding: 0.55rem 1.25rem; font-size: 0.8rem;">
+            <span>Start Free</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Element (Zoomed in to cover entire height and width with smooth streaming) -->
+    <div style="position: relative; width: 100%; height: 100%; overflow: hidden; background: #000;">
+      <video
+        id="intro-video"
+        src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788150952/upscaled-video_1.mp4"
+        class="intro-video-element"
+        autoplay
+        loop
+        muted
+        playsinline
+        webkit-playsinline="true"
+        preload="auto"
+        disablepictureinpicture
+        disableremoteplayback
+        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;"
+      >
+        <source
+          src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788150952/upscaled-video_1.mp4"
+          type="video/mp4"
+        />
+      </video>
+    </div>
+
+    <!-- Bottom Scroll Button -->
+    <div style="position: absolute; bottom: 1.5rem; left: 0; right: 0; z-index: 30; display: flex; justify-content: center;">
+      <a href="#hero" style="display: flex; align-items: center; gap: 0.6rem; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.6); padding: 0.5rem 1.25rem; backdrop-filter: blur(16px); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(245,241,236,0.9); text-decoration: none; transition: all 0.3s ease;">
+        <span>Explore Platform</span>
+        <svg style="width: 16px; height: 16px; color: var(--color-accent);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       2. Hero Section (2nd Section)
+       ========================================================================== -->
+  <section id="hero">
+    <!-- Background Video (aboutbgvideo) & Pattern Overlay -->
+    <div class="hero-bg-pattern">
+      <video
+        src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788150985/Final_1.mp4"
+        poster="/banner-bg.jpg"
+        autoplay
+        loop
+        muted
+        playsinline
+        webkit-playsinline="true"
+        preload="auto"
+        disablepictureinpicture
+        disableremoteplayback
+        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0.9;"
+      >
+        <source
+          src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788150985/Final_1.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <img src="/banner-bg.jpg" alt="" style="position: absolute; inset: 0; z-index: -10; width: 100%; height: 100%; object-fit: cover; opacity: 0.9;" />
+      <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(250, 246, 242, 0.98) 0%, rgba(250, 246, 242, 0.92) 35%, rgba(250, 246, 242, 0.65) 52%, rgba(250, 246, 242, 0.30) 70%, rgba(250, 246, 242, 0.10) 85%, transparent 100%); z-index: 1;"></div>
+      <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 4rem; background: linear-gradient(to top, rgba(250, 246, 242, 0.7), transparent); z-index: 1;"></div>
+    </div>
+
+    <!-- Main About CODIVIA Content -->
+    <div class="hero-content-grid">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 9999px; border: 1px solid rgba(242, 103, 34, 0.3); background: rgba(255, 255, 255, 0.85); padding: 0.35rem 0.9rem; margin-bottom: 1.25rem;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: var(--color-accent);"></span>
+          <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-accent);">
+            About CODIVIA • Practice-First EHR Platform
+          </span>
+        </div>
+
+        <h1 class="hero-headline">
+          Code with<br />
+          <span class="headline-gradient">confidence,</span><br />
+          get placed.
+        </h1>
+
+        <p style="margin-top: 1.5rem; max-width: 34rem; font-size: 1.1rem; line-height: 1.6; color: rgba(20, 18, 16, 0.8);">
+          CODIVIA is an immersive medical coding platform built to bridge the gap between classroom theory and real-world hospital workflows. Practice on <strong>13,200+ de-identified patient encounters</strong> across <strong>22 specialties</strong> with sub-second ICD-10-CM, CPT®-4, and HCPCS Level II validation to become certification-ready and placement-ready.
+        </p>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="#pricing" class="btn-start-free" style="padding: 1rem 2.25rem; font-size: 0.95rem;">Start Free Practice</a>
+          <a href="#journey" class="btn-secondary-white">See How It Works</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Marquee Ticker Strip -->
+    <div class="marquee-strip">
+      <div class="marquee-track">
+        <span>ICD-10-CM</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>CPT®-4</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>HCPCS LEVEL II</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>22 DEPARTMENTS</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>13,200+ PRACTICE CHARTS</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>ICD-10-CM</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>CPT®-4</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>HCPCS LEVEL II</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>22 DEPARTMENTS</span>
+        <span style="color: var(--color-accent);">•</span>
+        <span>13,200+ PRACTICE CHARTS</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       3. Live Practice Matrix Counters
+       ========================================================================== -->
+  <section id="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" data-counter-target="13200" data-counter-suffix="+">0</div>
+          <div class="stat-label">De-Identified Charts</div>
+          <div class="stat-desc">Authentic clinical encounter notes with multi-specialty operative narratives.</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number" data-counter-target="22" data-counter-suffix="">0</div>
+          <div class="stat-label">Clinical Departments</div>
+          <div class="stat-desc">From Cardiology and General Surgery to Neurology, Oncology, and PM&R.</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number" data-counter-target="99.4" data-counter-suffix="%" data-counter-decimals="1">0%</div>
+          <div class="stat-label">First-Pass Clean Claim Accuracy</div>
+          <div class="stat-desc">Instant automated validation matching diagnostic codes to procedural suites.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       4. 22 Departments Matrix Section (Alternating Side Layout)
+       ========================================================================== -->
+  <section id="departments" style="background-image: radial-gradient(rgba(20, 18, 16, 0.045) 1px, transparent 1px); background-size: 24px 24px;">
+    <div class="container">
+      <div style="max-width: 42rem; margin-bottom: 2rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent);">Specialty Matrix</span>
+        <h2 style="font-size: 2.75rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; margin-top: 0.5rem;">
+          22 Departments.<br />Every code set that matters.
+        </h2>
+        <p style="margin-top: 1rem; color: rgba(20, 18, 16, 0.7); font-size: 1.05rem;">
+          Each row is an authentic clinical track — explore realistic 3D anatomical models, diagnostic classifications, and procedural suites.
+        </p>
+      </div>
+
+      <!-- Clinical Category Filter Tabs -->
+      <div id="dept-filter-tabs" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2.5rem; background: rgba(20, 18, 16, 0.03); padding: 0.4rem; border-radius: 1rem; width: fit-content; border: 1px solid rgba(20, 18, 16, 0.1);">
+        <button class="dept-cat-btn active" onclick="filterDepartments('all')">All 22 Departments <span class="cat-count">22</span></button>
+        <button class="dept-cat-btn" onclick="filterDepartments('surgical')">Surgical & Procedural <span class="cat-count">6</span></button>
+        <button class="dept-cat-btn" onclick="filterDepartments('acute')">Critical & Inpatient <span class="cat-count">7</span></button>
+        <button class="dept-cat-btn" onclick="filterDepartments('medicine')">Diagnostic & Outpatient <span class="cat-count">9</span></button>
+      </div>
+
+      <!-- Container rendered dynamically by JavaScript -->
+      <div id="departments-matrix-container"></div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       5. 5-Step Milestone Roadmap
+       ========================================================================== -->
+  <section id="journey" style="background: var(--color-bone); color: var(--color-charcoal); padding: 7rem 1.5rem; border-bottom: 1px solid var(--color-border-light);">
+    <div class="container" style="max-width: 900px;">
+      <div style="text-align: center; margin-bottom: 4rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent); background: rgba(242,103,34,0.1); border: 1px solid rgba(242,103,34,0.25); padding: 0.35rem 0.85rem; border-radius: 9999px; display: inline-block; margin-bottom: 0.75rem;">Milestone Roadmap</span>
+        <h2 style="font-size: 2.75rem; font-weight: 900; letter-spacing: -0.02em; margin-top: 0.5rem; color: var(--color-charcoal);">Five steps. Zero friction.</h2>
+        <p style="margin-top: 0.75rem; color: rgba(20, 18, 16, 0.7);">From landing page to certification-ready clinical proficiency.</p>
+      </div>
+
+      <div class="timeline-step">
+        <div class="step-icon-badge" style="width: 3.5rem; height: 3.5rem; padding: 0.75rem; border-radius: 1rem; border: 1px solid rgba(242,103,34,0.3); background: rgba(242,103,34,0.1); color: var(--color-accent); display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" style="width: 100%; height: 100%;" stroke="currentColor">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="14 2 14 8 20 8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7 13h1.5l1-2 1.8 3.5 1.2-2H14" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="15.5" cy="15.5" r="3.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M18 18l3 3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); font-weight: 800;">STEP 01</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem; color: var(--color-charcoal);">Land & Explore</h3>
+          <p style="color: rgba(20, 18, 16, 0.7); margin-top: 0.35rem; font-size: 0.95rem;">Review the 22-department curriculum and try a free interactive chart in the sandbox.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="step-icon-badge" style="width: 3.5rem; height: 3.5rem; padding: 0.75rem; border-radius: 1rem; border: 1px solid rgba(242,103,34,0.3); background: rgba(242,103,34,0.1); color: var(--color-accent); display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" style="width: 100%; height: 100%;" stroke="currentColor">
+            <circle cx="9" cy="7" r="3.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 20v-1.5a4.5 4.5 0 0 1 4.5-4.5h3a4.5 4.5 0 0 1 4.5 4.5V20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M17 9.5l3.5-1.5V12c0 2.5-2 4.5-3.5 5.5-1.5-1-3.5-3-3.5-5.5V8l3.5 1.5z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M17 11.5v2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); font-weight: 800;">STEP 02</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem; color: var(--color-charcoal);">One-Click Google SSO</h3>
+          <p style="color: rgba(20, 18, 16, 0.7); margin-top: 0.35rem; font-size: 0.95rem;">Instant passwordless identity verification so your training progress syncs across devices.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="step-icon-badge" style="width: 3.5rem; height: 3.5rem; padding: 0.75rem; border-radius: 1rem; border: 1px solid rgba(242,103,34,0.3); background: rgba(242,103,34,0.1); color: var(--color-accent); display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" style="width: 100%; height: 100%;" stroke="currentColor">
+            <rect x="2" y="4" width="20" height="13" rx="2.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <line x1="2" y1="8.5" x2="22" y2="8.5" stroke-width="1.8" stroke-linecap="round" />
+            <line x1="5.5" y1="13" x2="9.5" y2="13" stroke-width="1.8" stroke-linecap="round" />
+            <circle cx="17.5" cy="17" r="4.2" style="fill: white;" stroke-width="1.8" />
+            <polyline points="15.5 17 17 18.5 19.8 15.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); font-weight: 800;">STEP 03</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem; color: var(--color-charcoal);">Transparent Enrolment Checkout</h3>
+          <p style="color: rgba(20, 18, 16, 0.7); margin-top: 0.35rem; font-size: 0.95rem;">No hidden fees. 256-bit encrypted checkout with instant verification.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="step-icon-badge" style="width: 3.5rem; height: 3.5rem; padding: 0.75rem; border-radius: 1rem; border: 1px solid rgba(242,103,34,0.3); background: rgba(242,103,34,0.1); color: var(--color-accent); display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" style="width: 100%; height: 100%;" stroke="currentColor">
+            <path d="M17.5 18H9a5.5 5.5 0 0 1-1.2-10.85A6.5 6.5 0 0 1 19.5 9a4.8 4.8 0 0 1-2 9z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <polygon points="12 9.5 9.5 14 13 14 11 18.5 16 13 12.5 13 14.5 9.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); font-weight: 800;">STEP 04</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem; color: var(--color-charcoal);">Instant Webhook Enrolment</h3>
+          <p style="color: rgba(20, 18, 16, 0.7); margin-top: 0.35rem; font-size: 0.95rem;">Automated cloud sync provisions your personalized 22-department curriculum instantly.</p>
+        </div>
+      </div>
+
+      <div class="timeline-step">
+        <div class="step-icon-badge" style="width: 3.5rem; height: 3.5rem; padding: 0.75rem; border-radius: 1rem; border: 1px solid rgba(242,103,34,0.3); background: rgba(242,103,34,0.1); color: var(--color-accent); display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" style="width: 100%; height: 100%;" stroke="currentColor">
+            <rect x="2.5" y="3" width="19" height="13.5" rx="2.5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 6.5v4M10 8.5h4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M8 20.5h8M12 16.5v4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M19 11v3.5a2.5 2.5 0 0 1-5 0V13" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="14" cy="13" r="0.8" stroke-width="1.6" />
+          </svg>
+        </div>
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-accent); font-weight: 800;">STEP 05</span>
+          <h3 style="font-size: 1.35rem; font-weight: 800; margin-top: 0.25rem; color: var(--color-charcoal);">Enter the Live EHR Workspace</h3>
+          <p style="color: rgba(20, 18, 16, 0.7); margin-top: 0.35rem; font-size: 0.95rem;">Start coding real operative notes, receiving sub-second validation telemetry.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       6. Interactive Code Playground Section
+       ========================================================================== -->
+  <section id="demo" style="background: var(--color-bg-light); color: var(--color-charcoal); padding: 6rem 1.5rem; border-bottom: 1px solid var(--color-border-light);">
+    <div class="container">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent);">Live Engine Sandbox</span>
+        <h2 style="font-size: 2.75rem; font-weight: 900; letter-spacing: -0.02em; margin-top: 0.5rem;">Try Real Chart Validation</h2>
+        <p style="margin-top: 0.75rem; color: rgba(20, 18, 16, 0.7);">Switch between specialties and inspect how CODIVIA extracts and validates code suites in real-time.</p>
+
+        <!-- Tab Switcher -->
+        <div style="display: inline-flex; background: rgba(20,18,16,0.06); padding: 0.35rem; border-radius: 9999px; margin-top: 1.5rem; gap: 0.35rem;">
+          <button id="tab-btn-cardiology" onclick="switchSpecialty('cardiology')" class="btn-secondary-white active-tab" style="padding: 0.5rem 1.25rem; font-size: 0.8rem; border: none;">Cardiology (ENC-882)</button>
+          <button id="tab-btn-orthopedics" onclick="switchSpecialty('orthopedics')" class="btn-secondary-white" style="padding: 0.5rem 1.25rem; font-size: 0.8rem; border: none;">Orthopedics (ENC-791)</button>
+        </div>
+      </div>
+
+      <!-- Playground Display Container -->
+      <div id="playground-display" style="max-width: 900px; margin: 0 auto;"></div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       7. Transparent Pricing Section
+       ========================================================================== -->
+  <section id="pricing">
+    <div class="container" style="max-width: 960px;">
+      <div style="text-align: center; margin-bottom: 4rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent);">Simple Investment</span>
+        <h2 style="font-size: 2.75rem; font-weight: 900; letter-spacing: -0.02em; margin-top: 0.5rem;">Transparent Pricing</h2>
+        <p style="margin-top: 0.75rem; color: rgba(245, 241, 236, 0.7);">Unlimited practice on 13,200+ real records across all 22 clinical tracks.</p>
+
+        <!-- Toggle -->
+        <div style="display: inline-flex; align-items: center; gap: 1rem; margin-top: 2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem 1.25rem; border-radius: 9999px;">
+          <span style="font-size: 0.85rem; font-weight: 700;">Monthly</span>
+          <label style="position: relative; display: inline-block; width: 44px; height: 24px;">
+            <input type="checkbox" id="billing-toggle" style="opacity: 0; width: 0; height: 0;" />
+            <span style="position: absolute; cursor: pointer; inset: 0; background: var(--color-accent); border-radius: 9999px;"></span>
+          </label>
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--color-accent);">Annual (Save 20%)</span>
+        </div>
+      </div>
+
+      <!-- Pricing Card -->
+      <div style="max-width: 500px; margin: 0 auto; background: var(--color-charcoal-card); border-radius: 1.5rem; border: 1px solid rgba(242, 103, 34, 0.3); padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.15em;">Pro Unlimited Access</span>
+        <div style="font-family: var(--font-mono); font-size: 3.5rem; font-weight: 900; margin: 1rem 0 0.5rem;">
+          $<span class="price-val" data-monthly="49" data-annual="39">49</span>
+          <span style="font-size: 1rem; color: rgba(245, 241, 236, 0.5); font-weight: 500;">/mo</span>
+        </div>
+        <p style="font-size: 0.9rem; color: rgba(245, 241, 236, 0.7); margin-bottom: 2rem;">Full access to all 22 clinical departments, 13,200+ practice records, and placement tracking.</p>
+
+        <a href="#demo" class="btn-start-free" style="width: 100%; padding: 1rem; font-size: 0.9rem;">Enrol in CODIVIA Pro</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       8. Trust & FAQ Section
+       ========================================================================== -->
+  <section id="faq">
+    <div class="container" style="max-width: 800px;">
+      <div style="text-align: center; margin-bottom: 3.5rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent);">Common Questions</span>
+        <h2 style="font-size: 2.5rem; font-weight: 900; letter-spacing: -0.02em; margin-top: 0.5rem;">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-item" id="faq-item-1">
+        <button class="faq-question-btn" onclick="toggleFAQ(1)">
+          <span>Are the charts real clinical records?</span>
+          <span class="faq-toggle-sign">+</span>
+        </button>
+        <div class="faq-answer">
+          Yes. All charts are derived from authentic clinical encounters across 22 specialties, fully de-identified in strict compliance with HIPAA Safe Harbor regulations.
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-item-2">
+        <button class="faq-question-btn" onclick="toggleFAQ(2)">
+          <span>Which certification exams does this prepare me for?</span>
+          <span class="faq-toggle-sign">+</span>
+        </button>
+        <div class="faq-answer">
+          CODIVIA prepares candidates for AAPC (CPC, COC, CIC, CRC) and AHIMA (CCS, CCA, CCS-P) certifications with specialty-specific coding suites.
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-item-3">
+        <button class="faq-question-btn" onclick="toggleFAQ(3)">
+          <span>How does the live validation engine work?</span>
+          <span class="faq-toggle-sign">+</span>
+        </button>
+        <div class="faq-answer">
+          Our sub-second validation engine cross-references your submitted ICD-10-CM, CPT, and HCPCS codes against official CMS and AMA coding guidelines in real time.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       9. Footer
+       ========================================================================== -->
+  <footer>
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.5rem; text-align: center;">
+      <img src="/codivia-logo-dark.png" alt="CODIVIA" height="32" />
+      <div style="font-size: 0.8rem; color: rgba(245, 241, 236, 0.4);">
+        © 2026 CODIVIA. All rights reserved. Practice-first medical coding training platform.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       Inline Scripts: Complete Vanilla JS Engine
+       ========================================================================== -->
+  <script>
+    // 22 Departments Data with 2-Line Clinical Descriptions
+    const departmentsData = [
+      { id: 'cardiology', index: '01', name: 'Cardiology', focus: 'Master cardiac catheterization, echocardiography, and coronary intervention coding with real hemodynamic reports and stenting cases.', icd: 'I20–I52, Z95', cpt: '93000–93799', hcpcs: 'C1721, C1777', charts: 940 },
+      { id: 'orthopedics', index: '02', name: 'Orthopedics', focus: 'Practice complex fracture fixations, total joint arthroplasty, and arthroscopic reconstructions with detailed operative notes.', icd: 'S42–S82, M17', cpt: '27130–27447', hcpcs: 'L1832, L3908', charts: 1120 },
+      { id: 'radiology', index: '03', name: 'Radiology', focus: 'Code multi-slice CT, MRI scans, and interventional fluoroscopy with diagnostic imaging impressions and modifier logic.', icd: 'R91, R93', cpt: '70450–77067', hcpcs: 'G0279', charts: 875 },
+      { id: 'emergency', index: '04', name: 'Emergency Medicine', focus: 'Handle high-acuity trauma documentation, rapid triage levels, and critical care E/M coding under emergency guidelines.', icd: 'S00–T88', cpt: '99281–99285', hcpcs: 'G0380–G0384', charts: 1310 },
+      { id: 'general-surgery', index: '05', name: 'General Surgery', focus: 'Navigate laparoscopic cholecystectomy, hernia repairs, and appendectomy operative narratives with surgical modifier accuracy.', icd: 'K35, K40', cpt: '44950–49585', hcpcs: 'C1874', charts: 690 },
+      { id: 'oncology', index: '06', name: 'Oncology', focus: 'Learn antineoplastic chemotherapy administration, clinical staging, and infusion coding through comprehensive tumor board cases.', icd: 'C00–C96, Z51', cpt: '96401–96549', hcpcs: 'J9000–J9999', charts: 780 },
+      { id: 'obgyn', index: '07', name: 'OB/GYN', focus: 'Code antepartum management, vaginal and cesarean deliveries, and complex gynecological surgical encounters.', icd: 'O09–O99', cpt: '59400–59622', hcpcs: 'S0612', charts: 610 },
+      { id: 'pediatrics', index: '08', name: 'Pediatrics', focus: 'Master well-child checkups, pediatric immunization schedules, and developmental milestones under AAP guidelines.', icd: 'P00–P96, Z00', cpt: '99381–99395', hcpcs: 'G0008–G0010', charts: 705 },
+      { id: 'neurology', index: '09', name: 'Neurology', focus: 'Interpret EEG telemetry logs, nerve conduction studies, and stroke workups with precise neurological diagnostic coding.', icd: 'G00–G99', cpt: '95810–95930', hcpcs: 'G0451', charts: 560 },
+      { id: 'dermatology', index: '10', name: 'Dermatology', focus: 'Practice lesion excision margins, tissue biopsies, and complex Mohs micrographic surgery reconstructions.', icd: 'C43, L57, L98', cpt: '11400–17311', hcpcs: 'G0127', charts: 480 },
+      { id: 'gastroenterology', index: '11', name: 'Gastroenterology', focus: 'Code diagnostic and therapeutic upper endoscopies, colonoscopies with polypectomies, and hepatology encounters.', icd: 'K20–K93', cpt: '43235–45385', hcpcs: 'G0121', charts: 615 },
+      { id: 'pulmonology', index: '12', name: 'Pulmonology', focus: 'Handle pulmonary function testing (PFTs), bronchoscopy records, and mechanical ventilator management protocols.', icd: 'J40–J99', cpt: '94010–94799', hcpcs: 'E0470', charts: 505 },
+      { id: 'nephrology', index: '13', name: 'Nephrology', focus: 'Stage chronic kidney disease (CKD), code hemodialysis sessions, and navigate renal transplant clinical records.', icd: 'N00–N29', cpt: '90935–90999', hcpcs: 'A4650–A4913', charts: 470 },
+      { id: 'endocrinology', index: '14', name: 'Endocrinology', focus: 'Master continuous glucose monitoring, insulin pump therapy, and metabolic thyroid management documentation.', icd: 'E08–E35', cpt: '95250–95251', hcpcs: 'A4230–A4259', charts: 530 },
+      { id: 'urology', index: '15', name: 'Urology', focus: 'Code cystourethroscopy, lithotripsy for urinary calculi, and prostate biopsy operative documentation.', icd: 'N20–N53', cpt: '52000–55866', hcpcs: 'C2617', charts: 415 },
+      { id: 'ent', index: '16', name: 'ENT (Otolaryngology)', focus: 'Navigate endoscopic sinus surgery, tympanoplasty, and audiometry evaluations with anatomical specificity.', icd: 'H60–J39', cpt: '30520–42826', hcpcs: 'V5008–V5299', charts: 390 },
+      { id: 'ophthalmology', index: '17', name: 'Ophthalmology', focus: 'Code phacoemulsification cataract extractions, retinal photocoagulation, and comprehensive glaucoma exams.', icd: 'H25–H59', cpt: '65091–67229', hcpcs: 'V2020–V2799', charts: 445 },
+      { id: 'psych', index: '18', name: 'Psychiatry & Behavioral Health', focus: 'Master psychiatric diagnostic intakes, psychotherapy modalities, and medication management evaluation codes.', icd: 'F01–F99', cpt: '90791–90899', hcpcs: 'H0031–H0038', charts: 520 },
+      { id: 'anesthesiology', index: '19', name: 'Anesthesiology', focus: 'Calculate anesthesia base units, qualifying circumstances, and physical status modifiers for operative cases.', icd: 'Z01, T88', cpt: '00100–01999', hcpcs: 'G0475', charts: 360 },
+      { id: 'pmr', index: '20', name: 'Physical Medicine & Rehab', focus: 'Code physical therapy modalities, functional capacity evaluations, and musculoskeletal rehabilitation plans.', icd: 'M54, S13–S39', cpt: '97110–97762', hcpcs: 'G0281–G0283', charts: 385 },
+      { id: 'infectious-disease', index: '21', name: 'Infectious Disease', focus: 'Navigate sepsis criteria, antimicrobial therapy regimens, and isolation protocol diagnostic coding.', icd: 'A00–B99', cpt: '87070–87999', hcpcs: 'G0480–G0483', charts: 355 },
+      { id: 'ambulatory', index: '22', name: 'Ambulatory / Outpatient E/M', focus: 'Master office and outpatient E/M leveling based on Medical Decision Making (MDM) complexity and time guidelines.', icd: 'Z00–Z99', cpt: '99202–99215', hcpcs: 'G0438–G0439', charts: 1160 },
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Intro Video Setup
+      const gate = document.getElementById('intro-gate');
+      const video = document.getElementById('intro-video');
+      const skipBtn = document.getElementById('skip-intro-btn');
+      const soundBtn = document.getElementById('sound-toggle-btn');
+      const eqBars = document.querySelector('.equalizer-bars');
+      const soundText = document.getElementById('sound-toggle-text');
+
+      document.body.style.overflow = 'hidden';
+      video.muted = true;
+      video.defaultMuted = true;
+      video.play().catch(e => console.warn(e));
+
+      function closeGate() {
+        gate.classList.add('hidden-gate');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          gate.style.display = 'none';
+          video.pause();
+        }, 600);
+      }
+
+      if (skipBtn) skipBtn.onclick = closeGate;
+      video.onended = closeGate;
+
+      if (soundBtn) {
+        soundBtn.onclick = (e) => {
+          e.stopPropagation();
+          video.muted = !video.muted;
+          if (video.muted) {
+            soundText.textContent = 'MUTED';
+            eqBars.classList.add('muted');
+          } else {
+            soundText.textContent = 'SOUND ON';
+            eqBars.classList.remove('muted');
+          }
+        };
+      }
+
+      // 2. Render 22 Departments Matrix with Category Filtering
+      const categoriesMap = {
+        all: null,
+        surgical: ['general-surgery', 'orthopedics', 'urology', 'ent', 'ophthalmology', 'obgyn'],
+        acute: ['emergency', 'cardiology', 'neurology', 'pulmonology', 'nephrology', 'anesthesiology', 'infectious-disease'],
+        medicine: ['radiology', 'oncology', 'gastroenterology', 'endocrinology', 'dermatology', 'pediatrics', 'psych', 'pmr', 'ambulatory']
+      };
+
+      let currentCategory = 'all';
+
+      window.filterDepartments = function(catId) {
+        currentCategory = catId;
+        document.querySelectorAll('.dept-cat-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('onclick').includes(catId));
+        });
+        renderDepartmentsList();
+      };
+
+      function renderDepartmentsList() {
+        const deptContainer = document.getElementById('departments-matrix-container');
+        if (!deptContainer) return;
+
+        const allowed = categoriesMap[currentCategory];
+        const deptsToShow = allowed ? departmentsData.filter(d => allowed.includes(d.id)) : departmentsData;
+
+        deptContainer.innerHTML = deptsToShow.map((dept, i) => {
+          const isEven = i % 2 === 0;
+          return `
+            <div class="dept-row ${isEven ? 'dept-row-even' : 'dept-row-odd'}" id="dept-row-${dept.id}">
+              <button class="dept-header-btn" onclick="toggleDept('${dept.id}')">
+                <div class="dept-icon-box">
+                  <img src="/departments/${dept.id}.png" alt="${dept.name}" loading="lazy" />
+                </div>
+                <div class="dept-text-stack">
+                  <div style="display: flex; align-items: baseline; gap: 0.6rem; ${isEven ? '' : 'flex-direction: row-reverse;'}">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(20, 18, 16, 0.4);">DEPT</span>
+                    <span class="dept-index-num" style="font-size: 1.85rem;">${dept.index}</span>
+                    <span style="font-size: 0.75rem; font-family: var(--font-mono); font-weight: 700; color: rgba(20, 18, 16, 0.6); margin-left: 0.5rem;">• ${dept.charts} Charts</span>
+                  </div>
+                  <h3 class="dept-title" style="font-size: 1.75rem; font-weight: 900; letter-spacing: -0.02em;">${dept.name}</h3>
+                  <p style="font-size: 0.85rem; color: rgba(20, 18, 16, 0.7); margin-top: 0.25rem; font-weight: 500; line-height: 1.5; max-width: 44rem;">${dept.focus}</p>
+                </div>
+                <div style="width: 2.5rem; height: 2.5rem; border-radius: 9999px; border: 1px solid rgba(20, 18, 16, 0.2); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; color: var(--color-charcoal); flex-shrink: 0; transition: all 0.3s ease;" class="dept-toggle-icon">+</div>
+              </button>
+              <div class="dept-accordion-content" id="dept-content-${dept.id}">
+                <div class="code-suites-grid" style="margin-top: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                  <div class="code-card" style="padding: 1.25rem; border-radius: 1rem; border: 1px solid rgba(20, 18, 16, 0.1); background: #fff;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span class="code-badge-pill">ICD-10-CM</span>
+                      <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(20,18,16,0.4); text-transform: uppercase;">Diagnostic</span>
+                    </div>
+                    <div class="code-range-val" style="font-size: 1.25rem; font-weight: 900; margin-top: 0.75rem;">${dept.icd}</div>
+                  </div>
+                  <div class="code-card" style="padding: 1.25rem; border-radius: 1rem; border: 1px solid rgba(20, 18, 16, 0.1); background: #fff;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span class="code-badge-pill">CPT®-4</span>
+                      <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(20,18,16,0.4); text-transform: uppercase;">Procedural</span>
+                    </div>
+                    <div class="code-range-val" style="font-size: 1.25rem; font-weight: 900; margin-top: 0.75rem;">${dept.cpt}</div>
+                  </div>
+                  <div class="code-card" style="padding: 1.25rem; border-radius: 1rem; border: 1px solid rgba(20, 18, 16, 0.1); background: #fff;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span class="code-badge-pill">HCPCS LEVEL II</span>
+                      <span style="font-size: 0.65rem; font-family: var(--font-mono); color: rgba(20,18,16,0.4); text-transform: uppercase;">Supplies</span>
+                    </div>
+                    <div class="code-range-val" style="font-size: 1.25rem; font-weight: 900; margin-top: 0.75rem;">${dept.hcpcs}</div>
+                  </div>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(20, 18, 16, 0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                  <span style="font-size: 0.75rem; font-family: var(--font-mono); color: rgba(20, 18, 16, 0.5);">AAPC & AHIMA Aligned • Real Chart Records</span>
+                  <a href="#demo" style="font-size: 0.8rem; font-weight: 800; color: var(--color-accent); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Test ${dept.name} Code in Sandbox →</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      renderDepartmentsList();
+
+      // 3. Canvas Particle Brand Mark
+      const canvas = document.getElementById('cv-mark-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const size = 440;
+        canvas.width = size;
+        canvas.height = size;
+        const particles = Array.from({ length: 24 }, () => ({
+          x: 140 + Math.random() * 160,
+          y: 200 + Math.random() * 150,
+          size: 4 + Math.random() * 8,
+          speed: 0.6 + Math.random() * 1.2,
+          opacity: 0.2 + Math.random() * 0.7,
+        }));
+
+        function drawMark() {
+          ctx.clearRect(0, 0, size, size);
+          const grad = ctx.createRadialGradient(220, 220, 10, 220, 220, 180);
+          grad.addColorStop(0, 'rgba(242, 103, 34, 0.15)');
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(220, 220, 180, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = '#F26722';
+          ctx.lineWidth = 18;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+
+          ctx.beginPath();
+          ctx.arc(175, 220, 70, Math.PI * 0.35, Math.PI * 1.65, false);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(215, 160);
+          ctx.lineTo(260, 280);
+          ctx.lineTo(315, 140);
+          ctx.stroke();
+
+          particles.forEach(p => {
+            p.y -= p.speed;
+            if (p.y < 80) { p.y = 300 + Math.random() * 40; p.x = 140 + Math.random() * 160; }
+            ctx.fillStyle = `rgba(242, 103, 34, ${p.opacity})`;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          });
+          requestAnimationFrame(drawMark);
+        }
+        drawMark();
+      }
+
+      // 4. Stat Counter Animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseFloat(el.getAttribute('data-counter-target'));
+            const suffix = el.getAttribute('data-counter-suffix') || '';
+            const decimals = parseInt(el.getAttribute('data-counter-decimals') || '0', 10);
+            const start = performance.now();
+            function count(now) {
+              const p = Math.min((now - start) / 1800, 1);
+              const val = target * (1 - Math.pow(1 - p, 3));
+              el.textContent = (decimals > 0 ? val.toFixed(decimals) : Math.floor(val).toLocaleString()) + suffix;
+              if (p < 1) requestAnimationFrame(count);
+            }
+            requestAnimationFrame(count);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      document.querySelectorAll('[data-counter-target]').forEach(el => observer.observe(el));
+
+      // 5. Playground Init
+      switchSpecialty('cardiology');
+
+      // 6. Pricing Toggle
+      const billingToggle = document.getElementById('billing-toggle');
+      if (billingToggle) {
+        billingToggle.onchange = (e) => {
+          document.querySelectorAll('.price-val').forEach(p => {
+            p.textContent = e.target.checked ? p.getAttribute('data-annual') : p.getAttribute('data-monthly');
+          });
+        };
+      }
+    });
+
+    // Global Interactive Functions
+    function toggleDept(deptId) {
+      const row = document.getElementById(`dept-row-${deptId}`);
+      const isAlreadyOpen = row.classList.contains('open');
+      document.querySelectorAll('.dept-row').forEach(r => {
+        r.classList.remove('open');
+        const icon = r.querySelector('.dept-toggle-icon');
+        if (icon) icon.textContent = '+';
+      });
+      if (!isAlreadyOpen) {
+        row.classList.add('open');
+        const icon = row.querySelector('.dept-toggle-icon');
+        if (icon) icon.textContent = '×';
+      }
+    }
+
+    function toggleFAQ(id) {
+      const item = document.getElementById(`faq-item-${id}`);
+      if (item) {
+        item.classList.toggle('open');
+        const sign = item.querySelector('.faq-toggle-sign');
+        if (sign) sign.textContent = item.classList.contains('open') ? '−' : '+';
+      }
+    }
+
+    const encountersData = {
+      cardiology: {
+        id: 'ENC-882', department: 'Cardiology Cath Lab', physician: 'Dr. E. Vance, MD, FACC',
+        narrative: '62yo male presented with retrosternal crushing chest pain, diaphoresis. EKG showed ST depressions in V3-V6. Troponin I elevated at 4.2 ng/mL. Diagnostic angiogram revealed 95% proximal LAD stenosis. Successful deployment of 3.5 x 18mm drug-eluting stent. Post-dilation achieved 0% residual stenosis with TIMI 3 flow.',
+        codes: [
+          { type: 'ICD-10-CM', code: 'I21.4', desc: 'Non-ST elevation (NSTEMI) myocardial infarction', match: '99.8%' },
+          { type: 'CPT-4', code: '92928-LD', desc: 'Percutaneous coronary intervention, single vessel LAD stent', match: 'Clean Claim' },
+          { type: 'HCPCS II', code: 'C1769', desc: 'Guide wire, diagnostic/interventional cardiology', match: '99.4%' }
+        ]
+      },
+      orthopedics: {
+        id: 'ENC-791', department: 'Orthopedic Surgery', physician: 'Dr. R. Sterling, MD, FAAOS',
+        narrative: '24yo female athlete with non-contact pivot injury. MRI confirmed complete ACL disruption and bucket-handle tear medial meniscus. Arthroscopic-assisted reconstruction using quadrupled semitendinosus/gracilis autograft. Meniscal repair performed using inside-out suture technique.',
+        codes: [
+          { type: 'ICD-10-CM', code: 'S83.511A', desc: 'Complete tear of anterior cruciate ligament of right knee, initial', match: '100%' },
+          { type: 'CPT-4', code: '29888-RT', desc: 'Arthroscopically aided ACL reconstruction, right knee', match: 'Clean Claim' },
+          { type: 'CPT-4', code: '29882-RT', desc: 'Arthroscopy, knee, surgical; with meniscus repair', match: '99.2%' }
+        ]
+      }
+    };
+
+    function switchSpecialty(spec) {
+      document.querySelectorAll('#tab-btn-cardiology, #tab-btn-orthopedics').forEach(b => b.classList.remove('active-tab'));
+      const activeBtn = document.getElementById(`tab-btn-${spec}`);
+      if (activeBtn) activeBtn.classList.add('active-tab');
+
+      const data = encountersData[spec];
+      const container = document.getElementById('playground-display');
+      if (container && data) {
+        container.innerHTML = `
+          <div style="background: #1D1A17; border-radius: 1.25rem; border: 1px solid rgba(245, 241, 236, 0.1); padding: 1.5rem; color: var(--color-bone);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(245, 241, 236, 0.1); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+              <div>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 800; color: var(--color-accent);">${data.id}</span>
+                <h4 style="font-size: 1.15rem; font-weight: 800; margin-top: 0.2rem;">${data.department}</h4>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(245, 241, 236, 0.5);">${data.physician}</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); border-radius: 0.75rem; padding: 1.25rem; font-size: 0.875rem; line-height: 1.6; color: rgba(245, 241, 236, 0.85); margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.05);">
+              <strong style="color: #fff; display: block; margin-bottom: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;">Operative Documentation:</strong>
+              ${data.narrative}
+            </div>
+            <div>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: rgba(245, 241, 236, 0.6); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.75rem;">Engine Code Extraction:</span>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
+                ${data.codes.map(c => `
+                  <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.75rem; padding: 0.85rem 1.25rem;">
+                    <div>
+                      <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: var(--color-accent); margin-right: 0.5rem;">${c.type}</span>
+                      <strong style="font-family: var(--font-mono); font-size: 1rem; color: #fff;">${c.code}</strong>
+                      <div style="font-size: 0.8rem; color: rgba(245, 241, 236, 0.6); margin-top: 0.2rem;">${c.desc}</div>
+                    </div>
+                    <span style="background: rgba(242, 103, 34, 0.15); color: var(--color-accent); border: 1px solid rgba(242, 103, 34, 0.3); padding: 0.25rem 0.6rem; border-radius: 9999px; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800;">${c.match}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
