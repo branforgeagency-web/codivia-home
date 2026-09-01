@@ -148,8 +148,8 @@ export default function CodingTeaser() {
           transition={{ duration: 0.7 }}
           className="relative max-w-6xl mx-auto"
         >
-          {/* Computer Monitor Bezel / Chassis */}
-          <div className="relative rounded-t-[28px] sm:rounded-t-[36px] bg-[#1A1A1E] p-2.5 sm:p-4 pb-0 border border-[#27272A] shadow-[0_30px_90px_-20px_rgba(16,24,40,0.35),0_0_0_1px_rgba(255,255,255,0.08)]">
+          {/* Computer Monitor Bezel / Chassis with Full Rounded Corners (Top & Bottom) */}
+          <div className="relative rounded-[28px] sm:rounded-[36px] bg-[#1A1A1E] p-2.5 sm:p-4 border border-[#27272A] shadow-[0_30px_90px_-20px_rgba(16,24,40,0.35),0_0_0_1px_rgba(255,255,255,0.08)]">
             {/* Top Bezel Center Camera Dot */}
             <div className="flex items-center justify-center pb-2">
               <div className="flex items-center gap-2">
@@ -160,8 +160,8 @@ export default function CodingTeaser() {
               </div>
             </div>
 
-            {/* Inside Display Screen */}
-            <div className="relative rounded-t-[18px] sm:rounded-t-[24px] overflow-hidden bg-white shadow-inner border border-[#0F172A]/10">
+            {/* Inside Display Screen with Full Rounded Corners */}
+            <div className="relative rounded-[18px] sm:rounded-[24px] overflow-hidden bg-white shadow-inner border border-[#0F172A]/10">
               {/* =========================================================
                   1. CODIVIA SOFTWARE TOP NAVBAR (Dark Navy)
                   ========================================================= */}

@@ -9,13 +9,9 @@ import CodingTeaser from './components/sections/CodingTeaser.jsx'
 import PricingGate from './components/sections/PricingGate.jsx'
 import TrustFAQ from './components/sections/TrustFAQ.jsx'
 import Footer from './components/sections/Footer.jsx'
+import DepartmentLandingPage from './components/department/DepartmentLandingPage.jsx'
 
-// Firebase / Razorpay wiring is intentionally optional at runtime: if
-// VITE_FIREBASE_API_KEY isn't set (e.g. previewing the UI without backend
-// credentials yet), the app still renders and the CTAs fall back to
-// smooth-scrolling instead of throwing. Both modules are dynamically
-// imported (not at module scope) so a missing/invalid Firebase config never
-// breaks the initial render.
+// Firebase / Razorpay wiring is intentionally optional at runtime
 let firebaseModule = null
 let razorpayModule = null
 
@@ -23,6 +19,27 @@ export default function App() {
   const [authState, setAuthState] = useState({ user: null, loading: true })
   const pricingRef = useRef(null)
   const journeyRef = useRef(null)
+
+  // Dynamic Department Route state based on URL hash: #/department/:deptId
+  const [activeDeptId, setActiveDeptId] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.hash.startsWith('#/department/')) {
+      return window.location.hash.replace('#/department/', '')
+    }
+    return null
+  })
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+      if (hash.startsWith('#/department/')) {
+        setActiveDeptId(hash.replace('#/department/', ''))
+      } else {
+        setActiveDeptId(null)
+      }
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
   useEffect(() => {
     let unsubscribe = () => {}
@@ -64,9 +81,19 @@ export default function App() {
     scrollTo(document.getElementById('journey'))
   }, [scrollTo])
 
-  const handlePay = useCallback(async () => {
+  const handleOpenDepartment = useCallback((deptId) => {
+    window.location.hash = `#/department/${deptId}`
+    setActiveDeptId(deptId)
+  }, [])
+
+  const handleBackToHome = useCallback(() => {
+    window.location.hash = ''
+    setActiveDeptId(null)
+  }, [])
+
+  const handlePay = useCallback(async (tier) => {
     if (!firebaseModule) {
-      alert('Payment requires Firebase configuration — see .env.example.')
+      alert(`Enrolment for ${tier?.name || 'Pro Practice Package'} initiated. Please configure Firebase to enable live payment processing!`)
       return
     }
     if (!authState.user) {
@@ -82,7 +109,7 @@ export default function App() {
     }
     await razorpayModule.startEnrolmentPayment({
       onSuccess: () => {
-        alert('Payment submitted — enrolment confirms automatically once verified.')
+        alert('Payment confirmed! Your Codivia Coding Studio EHR Workspace access is now unlocked.')
       },
       onError: (err) => {
         console.error('Payment error', err)
@@ -90,6 +117,17 @@ export default function App() {
       },
     })
   }, [authState.user])
+
+  // Render Dedicated Department Landing Page when active
+  if (activeDeptId) {
+    return (
+      <DepartmentLandingPage
+        deptId={activeDeptId}
+        onBack={handleBackToHome}
+        onCheckout={handlePay}
+      />
+    )
+  }
 
   return (
     <div className="min-h-screen bg-charcoal">
@@ -108,7 +146,7 @@ export default function App() {
       <HowCodiviaWorks />
 
       {/* 4th Section: 22 Departments Matrix */}
-      <DepartmentsMatrix />
+      <DepartmentsMatrix onOpenDepartmentPage={handleOpenDepartment} />
 
       {/* 5th Section: 5-Step Frictionless Onboarding */}
       <div ref={journeyRef}>
@@ -131,3 +169,4 @@ export default function App() {
     </div>
   )
 }
+

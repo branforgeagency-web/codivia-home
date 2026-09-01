@@ -6,7 +6,7 @@ import { departments } from '../../data/departments.js'
 /**
  * 22 Clinical Departments Full-Width Horizontal Carousel (50px Inset with Nav Arrows)
  */
-export default function DepartmentsMatrix({ onTrySandbox }) {
+export default function DepartmentsMatrix({ onTrySandbox, onOpenDepartmentPage }) {
   const [selectedDept, setSelectedDept] = useState(departments[0])
   const [activeCategory, setActiveCategory] = useState('all')
   const carouselRef = useRef(null)
@@ -236,72 +236,105 @@ export default function DepartmentsMatrix({ onTrySandbox }) {
                 key={dept.id}
                 onClick={() => setSelectedDept(dept)}
                 style={{ scrollSnapAlign: 'start' }}
-                className={`group relative flex flex-col justify-between w-[275px] sm:w-[295px] lg:w-[315px] h-[415px] sm:h-[435px] shrink-0 rounded-3xl border bg-white p-5 transition-all duration-400 cursor-pointer overflow-hidden ${
-                  isSelected
-                    ? 'border-accent shadow-2xl shadow-accent/20 ring-2 ring-accent scale-[1.02]'
-                    : 'border-charcoal/10 hover:border-accent hover:shadow-2xl hover:shadow-accent/15 hover:-translate-y-2.5'
-                }`}
+                className={`dept-uicard group ${isSelected ? 'is-selected' : ''}`}
               >
-                {/* Background Ambient Radial Glow on Hover */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent/[0.08] via-transparent to-accent/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
-                
-                {/* Decorative Top-Right Subtle Orb */}
-                <div className="pointer-events-none absolute -top-12 -right-12 h-28 w-28 rounded-full bg-accent/15 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                {/* Card Top: Big Department Number */}
-                <div className="relative z-10 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-sm sm:text-base font-black text-accent bg-accent/10 border border-accent/25 px-2.5 py-1 rounded-xl shadow-xs tracking-tight group-hover:bg-accent group-hover:text-white group-hover:border-accent group-hover:shadow-md group-hover:shadow-accent/30 transition-all duration-300">
-                      #{dept.index}
-                    </span>
-                    <span className="text-[10px] font-mono font-extrabold text-charcoal/40 uppercase tracking-wider">
-                      SPECIALTY
-                    </span>
-                  </div>
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                {/* Top-Right Specialty Index Badge */}
+                <div className="top-badge flex items-center gap-1.5">
+                  <span className="font-mono text-xs font-black text-accent bg-white/95 border border-accent/25 px-2.5 py-0.5 rounded-full shadow-xs tracking-tight">
+                    #{dept.index}
+                  </span>
                 </div>
 
-                {/* Center 3D Department Image with Dynamic Float & Scale */}
-                <div className="relative z-10 my-auto flex h-36 sm:h-40 w-full items-center justify-center py-2">
+                {/* Profile Pic / 3D Medical Icon Area — Morphs into Top-Left Circle on Hover */}
+                <div className="profile-pic">
                   <img
                     src={`/departments/${dept.id}.png`}
                     alt={dept.name}
-                    className="h-full w-full object-contain drop-shadow-md transition-all duration-500 ease-out group-hover:scale-115 group-hover:-translate-y-1.5 group-hover:drop-shadow-xl"
+                    className="dept-img"
                     loading="lazy"
                     draggable="false"
                   />
+                  <h3 className="dept-title-front">
+                    {dept.name}
+                  </h3>
+                  <span className="dept-cases-front">
+                    {dept.charts} Practice Cases
+                  </span>
                 </div>
 
-                {/* Card Bottom: Department Identity & Code Sets */}
-                <div className="relative z-10 space-y-2.5 pt-2.5 border-t border-charcoal/5 group-hover:border-accent/20 transition-colors">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-base sm:text-lg font-black text-charcoal group-hover:text-accent transition-colors truncate leading-normal py-0.5">
-                      {dept.name}
-                    </h3>
-                    <span className="font-mono text-xs font-black text-accent bg-accent/10 group-hover:bg-accent group-hover:text-white px-2 py-0.5 rounded-lg shrink-0 transition-colors">
-                      {dept.charts} cases
+                {/* Sliding Drawer Bottom Panel — Reveals on Hover */}
+                <div className="bottom">
+                  {/* Unhovered Peek Bar */}
+                  <div className="peek-bar">
+                    <span className="text-[11px] font-bold text-charcoal/70 uppercase tracking-wider font-mono">
+                      Clinical Code Sets
+                    </span>
+                    <span className="flex items-center gap-1 text-xs font-black text-accent">
+                      Inspect
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
                     </span>
                   </div>
 
-                  {/* Code Sets Mini Badges with Hover Glow */}
-                  <div className="grid grid-cols-3 gap-1.5 font-mono text-[9px] text-center">
-                    <div className="rounded-xl bg-charcoal/[0.03] group-hover:bg-white group-hover:border-accent/30 group-hover:shadow-xs border border-charcoal/5 py-1.5 px-1 transition-all">
-                      <span className="font-extrabold text-accent block">ICD-10</span>
-                      <span className="text-charcoal/70 truncate block">{dept.icd.split(',')[0]}</span>
+                  {/* Hover Revealed Content */}
+                  <div className="content">
+                    {/* Top Header beside floating circular avatar */}
+                    <div className="pl-20 sm:pl-22 pr-1 min-h-[58px] flex flex-col justify-center">
+                      <h4 className="text-sm sm:text-base font-black text-charcoal leading-tight truncate">
+                        {dept.name}
+                      </h4>
+                      <span className="font-mono text-[11px] font-extrabold text-accent">
+                        {dept.charts} Verified Cases
+                      </span>
                     </div>
-                    <div className="rounded-xl bg-charcoal/[0.03] group-hover:bg-white group-hover:border-accent/30 group-hover:shadow-xs border border-charcoal/5 py-1.5 px-1 transition-all">
-                      <span className="font-extrabold text-accent block">CPT®</span>
-                      <span className="text-charcoal/70 truncate block">{dept.cpt.split('–')[0]}...</span>
+
+                    {/* Focus narrative */}
+                    <p className="text-[11px] sm:text-xs text-charcoal/80 line-clamp-3 leading-relaxed font-medium mt-1">
+                      {dept.focus}
+                    </p>
+
+                    {/* Code Sets Mini Badges */}
+                    <div className="grid grid-cols-3 gap-1.5 font-mono text-[9px] text-center my-2">
+                      <div className="rounded-xl bg-white/90 border border-accent/20 py-1.5 px-1 shadow-2xs">
+                        <span className="font-extrabold text-accent block">ICD-10</span>
+                        <span className="text-charcoal/80 truncate block">{dept.icd.split(',')[0]}</span>
+                      </div>
+                      <div className="rounded-xl bg-white/90 border border-accent/20 py-1.5 px-1 shadow-2xs">
+                        <span className="font-extrabold text-accent block">CPT®</span>
+                        <span className="text-charcoal/80 truncate block">{dept.cpt.split('–')[0]}...</span>
+                      </div>
+                      <div className="rounded-xl bg-white/90 border border-accent/20 py-1.5 px-1 shadow-2xs">
+                        <span className="font-extrabold text-accent block">HCPCS</span>
+                        <span className="text-charcoal/80 truncate block">Level II</span>
+                      </div>
                     </div>
-                    <div className="rounded-xl bg-charcoal/[0.03] group-hover:bg-white group-hover:border-accent/30 group-hover:shadow-xs border border-charcoal/5 py-1.5 px-1 transition-all">
-                      <span className="font-extrabold text-accent block">HCPCS</span>
-                      <span className="text-charcoal/70 truncate block">Level II</span>
+
+                    {/* Bottom Action Footer */}
+                    <div className="flex items-center justify-between pt-1.5 border-t border-accent/15">
+                      <span className="text-[10px] font-mono font-bold text-emerald-600 flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        5 Free Charts
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (onOpenDepartmentPage) {
+                            onOpenDepartmentPage(dept.id)
+                          } else {
+                            window.location.hash = `#/department/${dept.id}`
+                          }
+                        }}
+                        className="bg-accent hover:bg-accent-bright text-white font-bold text-[11px] px-3 py-1 rounded-full shadow-xs transition-colors flex items-center gap-1 cursor-pointer"
+                      >
+                        Try Charts
+                        <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
-
-                {/* Creative Bottom Glow Bar (Expands on Hover) */}
-                <div className="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-accent via-accent-bright to-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-center" />
               </div>
             )
           })}
@@ -380,15 +413,23 @@ export default function DepartmentsMatrix({ onTrySandbox }) {
                 </div>
 
                 {/* Right Action Button */}
-                <div className="lg:col-span-3 flex lg:justify-end">
-                  <a
-                    href="#demo"
-                    onClick={onTrySandbox}
-                    className="w-full lg:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-accent/25 hover:bg-accent-bright transition-all cursor-pointer"
+                <div className="lg:col-span-3 flex flex-col sm:flex-row lg:flex-col justify-end gap-2">
+                  <button
+                    onClick={() => {
+                      if (onOpenDepartmentPage) {
+                        onOpenDepartmentPage(selectedDept.id)
+                      } else {
+                        window.location.hash = `#/department/${selectedDept.id}`
+                      }
+                    }}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-accent px-5 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-accent/25 hover:bg-accent-bright transition-all cursor-pointer"
                   >
-                    <span>Test in Live Sandbox</span>
+                    <span>Open {selectedDept.name} Page</span>
                     <span>→</span>
-                  </a>
+                  </button>
+                  <span className="text-center text-[10px] font-mono text-emerald-600 font-bold">
+                    ✓ Includes 5 Free Trial Charts
+                  </span>
                 </div>
               </div>
             </motion.div>

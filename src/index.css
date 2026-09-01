@@ -61,3 +61,181 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ==========================================================================
+   Interactive Department Cards (Uiverse.io inspired with Codivia design language)
+   ========================================================================== */
+.dept-uicard {
+  width: 300px;
+  height: 420px;
+  background: white;
+  border-radius: 32px;
+  padding: 4px;
+  position: relative;
+  box-shadow: 0px 20px 40px -15px rgba(241, 90, 36, 0.12), 0 2px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(241, 90, 36, 0.15);
+  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .dept-uicard {
+    width: 320px;
+    height: 440px;
+  }
+}
+
+.dept-uicard:hover {
+  border-top-left-radius: 55px;
+  border-color: #F15A24;
+  box-shadow: 0px 30px 60px -20px rgba(241, 90, 36, 0.25);
+  transform: translateY(-5px);
+}
+
+.dept-uicard.is-selected {
+  border-color: #F15A24;
+  box-shadow: 0px 25px 50px -15px rgba(241, 90, 36, 0.3);
+  ring: 2px solid #F15A24;
+}
+
+.dept-uicard .top-badge {
+  position: absolute;
+  right: 1.25rem;
+  top: 1.25rem;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.dept-uicard .profile-pic {
+  position: absolute;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  top: 4px;
+  left: 4px;
+  border-radius: 28px;
+  z-index: 1;
+  border: 0px solid #F15A24;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, rgba(241, 90, 36, 0.06), transparent 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1rem 3.5rem 1rem;
+  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.1s, z-index 0.5s ease 0.1s;
+}
+
+.dept-uicard .profile-pic .dept-img {
+  width: 100%;
+  height: 185px;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.1));
+  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.dept-uicard .profile-pic .dept-title-front {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #1E293B;
+  text-align: center;
+  margin-top: 0.75rem;
+  transition: all 0.3s ease;
+  line-height: 1.25;
+}
+
+.dept-uicard .profile-pic .dept-cases-front {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #F15A24;
+  background: rgba(241, 90, 36, 0.1);
+  padding: 0.2rem 0.75rem;
+  border-radius: 9999px;
+  margin-top: 0.35rem;
+  transition: all 0.3s ease;
+}
+
+.dept-uicard:hover .profile-pic {
+  width: 86px;
+  height: 86px;
+  aspect-ratio: 1;
+  top: 12px;
+  left: 12px;
+  border-radius: 50%;
+  z-index: 3;
+  border: 4px solid #F15A24;
+  background: white;
+  box-shadow: 0px 10px 25px rgba(241, 90, 36, 0.22);
+  padding: 6px;
+  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), z-index 0.5s ease 0.1s;
+}
+
+.dept-uicard:hover .profile-pic .dept-img {
+  width: 100%;
+  height: 100%;
+  transform: scale(1.05);
+}
+
+.dept-uicard:hover .profile-pic .dept-title-front,
+.dept-uicard:hover .profile-pic .dept-cases-front {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.dept-uicard .bottom {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  right: 4px;
+  background: linear-gradient(135deg, #FFF7F4 0%, #FFEFE8 100%);
+  border: 1px solid rgba(241, 90, 36, 0.25);
+  top: 80%;
+  border-radius: 28px;
+  z-index: 2;
+  box-shadow: inset 0px 3px 6px rgba(241, 90, 36, 0.08);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem 1rem 0.75rem 1rem;
+}
+
+.dept-uicard:hover .bottom {
+  top: 18%;
+  border-radius: 80px 28px 28px 28px;
+  padding: 1rem 1.15rem 1rem 1.15rem;
+  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.15s;
+}
+
+.dept-uicard .bottom .peek-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: opacity 0.3s ease;
+}
+
+.dept-uicard:hover .bottom .peek-bar {
+  opacity: 0;
+  display: none;
+}
+
+.dept-uicard .bottom .content {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.35s ease 0.05s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dept-uicard:hover .bottom .content {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s ease 0.25s;
+}
+

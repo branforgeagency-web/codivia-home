@@ -237,47 +237,122 @@ export default function HowCodiviaWorks() {
         </div>
 
         {/* 2. Video Player Component with 50px Margin (Starts Paused by Default) */}
-        <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="my-[50px] relative overflow-hidden rounded-3xl border border-[#101828]/15 bg-[#101828] shadow-[0_25px_60px_-15px_rgba(16,24,40,0.25),0_0_0_1px_rgba(255,107,0,0.15)] group"
-        >
-          {/* Top Decorative Browser/Player Bar */}
-          <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#101828]/90 border-b border-white/10 backdrop-blur-md">
-            <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full bg-red-500/80" />
-              <span className="h-3 w-3 rounded-full bg-amber-500/80" />
-              <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
-              <span className="ml-2 font-mono text-[11px] text-white/50 hidden sm:inline">
-                codivia-live-walkthrough
-              </span>
-            </div>
-          </div>
+        <div className="my-[50px] relative">
+          
+          {/* Floating Animated Origami "BUY CHARTS NOW" Badge (Hero Scale ~20% Screen Width) */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 15 }}
+            whileInView={{ scale: 1, opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.15, y: -14, rotate: 0 }}
+            whileTap={{ scale: 0.96 }}
+            animate={{
+              y: [0, -10, 0],
+              rotate: [-1.2, 1.2, -1.2],
+            }}
+            transition={{
+              y: { repeat: Infinity, duration: 3.4, ease: 'easeInOut' },
+              rotate: { repeat: Infinity, duration: 4.8, ease: 'easeInOut' },
+              scale: { type: 'spring', stiffness: 350, damping: 22 },
+            }}
+            onClick={() => {
+              const pricingEl = document.getElementById('pricing')
+              if (pricingEl) {
+                pricingEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }
+            }}
+            className="absolute -top-10 -right-3 sm:-top-14 sm:-right-6 md:-top-16 md:-right-8 z-30 cursor-pointer select-none group origin-bottom-right"
+            title="Buy Practice Charts Now"
+          >
+            {/* Radiant Glowing Background Halo (Substantial coverage) */}
+            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-red-600/70 via-[#FF4A00]/80 to-red-600/70 blur-3xl opacity-85 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
 
-          {/* HTML5 Video Container */}
-          <div className="relative aspect-video w-full bg-black overflow-hidden flex items-center justify-center">
-            <video
-              ref={videoRef}
-              src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788154241/upscaled-video_2.mp4"
-              poster="/banner-bg.jpg"
-              loop
-              muted={isMuted}
-              playsInline
-              webkit-playsinline="true"
-              preload="metadata"
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onTimeUpdate={handleTimeUpdate}
-              className="h-full w-full object-contain sm:object-cover object-center cursor-pointer"
-              onClick={togglePlay}
-            >
-              <source
+            {/* Origami Structure Container (Scaled to 20% Screen Width) */}
+            <div className="relative flex flex-col items-center drop-shadow-[0_25px_45px_rgba(0,0,0,0.65)] group-hover:drop-shadow-[0_35px_60px_rgba(220,38,38,0.7)] transition-all duration-300">
+              
+              {/* Top Dark Folded Tab ("BUY") */}
+              <div className="relative z-20 self-start ml-3 sm:ml-5">
+                {/* Folded Corner Dog-Ear */}
+                <div className="absolute -left-3 top-0 w-0 h-0 border-t-[10px] sm:border-t-[12px] border-t-transparent border-r-[10px] sm:border-r-[12px] border-r-[#0A0A0C] border-b-[10px] sm:border-b-[12px] border-b-[#0A0A0C]" />
+                
+                <div className="bg-[#141417] text-white font-black text-xs sm:text-sm md:text-base tracking-[0.25em] uppercase px-5 sm:px-7 py-1.5 sm:py-2 rounded-t-md shadow-md border-t border-x border-white/30">
+                  BUY
+                </div>
+              </div>
+
+              {/* Main Red-Orange Banner ("CHARTS NOW") */}
+              <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-6 sm:px-9 py-4 sm:py-6 shadow-2xl border-t border-white/40 overflow-hidden w-[210px] sm:w-[270px] md:w-[320px] text-center rounded-sm">
+                {/* Diagonal Glass Sweep Reflection */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+
+                <div className="flex flex-col items-center leading-[0.9]">
+                  <span className="font-black text-3xl sm:text-4xl md:text-5xl tracking-tighter uppercase drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
+                    CHARTS
+                  </span>
+                  <span className="font-black text-4xl sm:text-5xl md:text-6xl tracking-tight uppercase drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)] mt-1 sm:mt-1.5">
+                    NOW
+                  </span>
+                </div>
+
+                {/* Sub-badge Highlight */}
+                <div className="mt-3 pt-2.5 border-t border-white/30 flex items-center justify-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase font-extrabold text-white/95 tracking-wider">
+                  <span className="h-2 w-2 rounded-full bg-yellow-300 animate-ping" />
+                  <span>Instant EHR Access</span>
+                </div>
+              </div>
+
+              {/* Bottom 3D Origami Fold Triangle */}
+              <div className="self-end mr-5 sm:mr-8 flex">
+                {/* Shadow Fold Triangle */}
+                <div className="w-0 h-0 border-l-[20px] sm:border-l-[26px] border-l-transparent border-t-[20px] sm:border-t-[26px] border-t-[#6B1414]" />
+                {/* Projecting Ribbon Point */}
+                <div className="w-0 h-0 border-r-[26px] sm:border-r-[36px] border-r-transparent border-t-[20px] sm:border-t-[26px] border-t-[#B91C1C]" />
+              </div>
+
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="relative overflow-hidden rounded-3xl border border-[#101828]/15 bg-[#101828] shadow-[0_25px_60px_-15px_rgba(16,24,40,0.25),0_0_0_1px_rgba(255,107,0,0.15)] group"
+          >
+            {/* Top Decorative Browser/Player Bar */}
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#101828]/90 border-b border-white/10 backdrop-blur-md">
+              <div className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                <span className="h-3 w-3 rounded-full bg-amber-500/80" />
+                <span className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                <span className="ml-2 font-mono text-[11px] text-white/50 hidden sm:inline">
+                  codivia-live-walkthrough
+                </span>
+              </div>
+            </div>
+
+            {/* HTML5 Video Container */}
+            <div className="relative aspect-video w-full bg-black overflow-hidden flex items-center justify-center">
+              <video
+                ref={videoRef}
                 src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788154241/upscaled-video_2.mp4"
-                type="video/mp4"
-              />
-            </video>
+                poster="/banner-bg.jpg"
+                loop
+                muted={isMuted}
+                playsInline
+                webkit-playsinline="true"
+                preload="metadata"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onTimeUpdate={handleTimeUpdate}
+                className="h-full w-full object-contain sm:object-cover object-center cursor-pointer"
+                onClick={togglePlay}
+              >
+                <source
+                  src="https://res.cloudinary.com/c2wyo4vs/video/upload/v1788154241/upscaled-video_2.mp4"
+                  type="video/mp4"
+                />
+              </video>
 
             {/* Frosted Glass Overlay Play Button (when paused) */}
             {!isPlaying && (
@@ -364,6 +439,7 @@ export default function HowCodiviaWorks() {
             </div>
           </div>
         </motion.div>
+      </div>
 
         {/* 3. Pinned Process Board Section with Connecting Route */}
         <div className="relative mt-12">
