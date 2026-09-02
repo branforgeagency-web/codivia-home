@@ -4,7 +4,7 @@ import { departmentTiers, getDepartmentCases } from '../../data/departmentCases.
 import { departments } from '../../data/departments.js'
 import CodiviaLogo from '../ui/CodiviaLogo.jsx'
 
-export default function DepartmentLandingPage({ deptId, onBack, onCheckout }) {
+export default function DepartmentLandingPage({ deptId, onBack, onCheckout, user, onSignOut }) {
   const dept = departments.find((d) => d.id === deptId) || departments[0]
   const trialCases = getDepartmentCases(dept.id, dept.name)
 
@@ -111,6 +111,19 @@ export default function DepartmentLandingPage({ deptId, onBack, onCheckout }) {
           </div>
 
           <div className="flex items-center gap-3">
+            {user && (
+              <button
+                type="button"
+                onClick={onSignOut}
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-charcoal/5 hover:bg-charcoal/10 px-3.5 py-1.5 text-xs font-bold text-charcoal/70 hover:text-charcoal transition-colors cursor-pointer"
+                title="Sign Out"
+              >
+                <span>{user.isDemo ? '⚡ Demo Coder' : (user.displayName || user.email?.split('@')[0] || 'Coder')}</span>
+                <span className="text-charcoal/30">|</span>
+                <span>Sign out</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => scrollToSection('pricing-packs')}

@@ -51,7 +51,7 @@ export default function NewHeroBanner({ onStartFree, onSeeHowItWorks, onSignIn }
         whileHover={{ scale: 1.08, rotate: 0 }}
         whileTap={{ scale: 0.96 }}
         onClick={scrollToDepartments}
-        className="absolute top-[82px] right-8 sm:top-[94px] sm:right-12 md:top-[102px] md:right-16 z-30 cursor-pointer select-none group origin-top-right scale-[0.34] xs:scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.68]"
+        className="hidden lg:block absolute top-[82px] right-8 sm:top-[94px] sm:right-12 md:top-[102px] md:right-16 z-30 cursor-pointer select-none group origin-top-right scale-[0.34] xs:scale-[0.4] sm:scale-[0.5] md:scale-[0.6] lg:scale-[0.68]"
         title="Choose a department & buy charts"
       >
         {/* Origami Structure Container */}
@@ -296,7 +296,86 @@ export default function NewHeroBanner({ onStartFree, onSeeHowItWorks, onSignIn }
           {/* =======================================================================
               RIGHT COLUMN: TRANSPARENT PNG 3D LAPTOP (100% VISIBLE, ZERO BLUR)
               ======================================================================= */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center relative mt-8 lg:mt-0">
+          <div className="lg:col-span-6 flex flex-col items-center justify-center relative mt-6 lg:mt-0">
+            {/* ===============================================================
+                MOBILE VIEW: COMPACT BADGES DIRECTLY ABOVE LAPTOP (VISIBLE < LG)
+                =============================================================== */}
+            <div className="flex lg:hidden items-end justify-center gap-2.5 sm:gap-4 w-full mb-3 sm:mb-4 z-30">
+              {/* Left: Compact TRY 5 FREE TRIAL CHARTS Badge */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={scrollToDepartments}
+                className="cursor-pointer select-none group"
+                title="Try 5 Free Trial Charts Now"
+              >
+                <div className="relative flex flex-col items-center drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]">
+                  {/* Top Dark Folded Tab */}
+                  <div className="relative z-20 self-start ml-1.5">
+                    <div className="absolute -left-1.5 top-0 w-0 h-0 border-t-[5px] border-t-transparent border-r-[5px] border-r-[#0A0A0C] border-b-[5px] border-b-[#0A0A0C]" />
+                    <div className="bg-[#141417] font-black text-[8px] sm:text-[9px] tracking-[0.14em] uppercase px-2 py-0.5 rounded-t-xs border-t border-x border-white/40 flex items-center gap-1">
+                      <span className="text-[#FFE600]">TRY</span>
+                      <span className="text-[11px] sm:text-xs font-black text-yellow-300 leading-none">5</span>
+                      <span className="h-1 w-1 rounded-full bg-[#FFE600] animate-ping" />
+                    </div>
+                  </div>
+                  {/* Main Orange Card */}
+                  <div className="relative z-10 bg-gradient-to-br from-[#FF6B00] via-[#F26722] to-[#D94F00] text-white px-2 sm:px-2.5 py-1.5 shadow-md border-t border-white/40 w-[115px] sm:w-[135px] text-center rounded-xs">
+                    <div className="flex items-center justify-center gap-1 leading-none">
+                      <span className="font-black text-xl sm:text-2xl text-yellow-300 leading-none">5</span>
+                      <div className="flex flex-col items-start text-left leading-[0.85]">
+                        <span className="font-black text-[8px] sm:text-[9px] tracking-tight uppercase">FREE TRIAL</span>
+                        <span className="font-black text-[10px] sm:text-[11px] tracking-tight uppercase mt-0.5">CHARTS</span>
+                      </div>
+                    </div>
+                    <div className="mt-1 pt-0.5 border-t border-white/25 text-[6px] sm:text-[7px] font-mono uppercase font-bold text-white/90">
+                      Instant EHR Access
+                    </div>
+                  </div>
+                  {/* Triangle Fold */}
+                  <div className="self-end mr-1.5 flex">
+                    <div className="w-0 h-0 border-l-[7px] border-l-transparent border-t-[7px] border-t-[#8C2C00]" />
+                    <div className="w-0 h-0 border-r-[10px] border-r-transparent border-t-[7px] border-t-[#D94F00]" />
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Right: Compact BUY CHARTS NOW Badge */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={scrollToDepartments}
+                className="cursor-pointer select-none group"
+                title="Choose a department & buy charts"
+              >
+                <div className="relative flex flex-col items-center drop-shadow-[0_8px_18px_rgba(0,0,0,0.35)]">
+                  {/* Top Dark Folded Tab */}
+                  <div className="relative z-20 self-start ml-1.5">
+                    <div className="absolute -left-1.5 top-0 w-0 h-0 border-t-[5px] border-t-transparent border-r-[5px] border-r-[#0A0A0C] border-b-[5px] border-b-[#0A0A0C]" />
+                    <div className="bg-[#141417] font-black text-[8px] sm:text-[9px] tracking-[0.14em] uppercase px-2 py-0.5 rounded-t-xs border-t border-x border-white/40 flex items-center gap-1">
+                      <span className="text-[#FFE600]">BUY</span>
+                      <span className="h-1 w-1 rounded-full bg-[#FFE600] animate-ping" />
+                    </div>
+                  </div>
+                  {/* Main Red Card */}
+                  <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-2 sm:px-2.5 py-1.5 shadow-md border-t border-white/40 w-[115px] sm:w-[135px] text-center rounded-xs">
+                    <div className="flex flex-col items-center leading-[0.88]">
+                      <span className="font-black text-xs sm:text-sm tracking-tighter uppercase">CHARTS</span>
+                      <span className="font-black text-sm sm:text-base tracking-tight uppercase">NOW</span>
+                    </div>
+                    <div className="mt-1 pt-0.5 border-t border-white/25 text-[6px] sm:text-[7px] font-mono uppercase font-bold text-white/90">
+                      Instant Access
+                    </div>
+                  </div>
+                  {/* Triangle Fold */}
+                  <div className="self-end mr-1.5 flex">
+                    <div className="w-0 h-0 border-l-[7px] border-l-transparent border-t-[7px] border-t-[#6B1414]" />
+                    <div className="w-0 h-0 border-r-[10px] border-r-transparent border-t-[7px] border-t-[#B91C1C]" />
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -312,45 +391,45 @@ export default function NewHeroBanner({ onStartFree, onSeeHowItWorks, onSignIn }
               />
 
               {/* ===================================================================
-                  ORIGAMI "BUY CHARTS NOW" BADGE (Top-Right of Laptop - Scaled Down)
+                  DESKTOP ORIGAMI "BUY CHARTS NOW" BADGE (Hidden on Mobile < LG)
                   =================================================================== */}
               <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 15 }}
                 animate={{
-                  y: [0, -8, 0],
-                  rotate: [-1, 1, -1],
+                  y: [0, -6, 0],
+                  rotate: [-0.8, 0.8, -0.8],
                 }}
                 transition={{
                   y: { repeat: Infinity, duration: 3.4, ease: 'easeInOut' },
                   rotate: { repeat: Infinity, duration: 4.8, ease: 'easeInOut' },
                   scale: { type: 'spring', stiffness: 350, damping: 22 },
                 }}
-                whileHover={{ scale: 1.1, y: -10, rotate: 0 }}
+                whileHover={{ scale: 1.08, y: -8, rotate: 0 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={scrollToDepartments}
-                className="absolute -top-[45px] right-[5px] sm:-top-[60px] sm:right-[15px] md:-top-[75px] md:right-[20px] lg:-top-[85px] lg:right-[25px] z-30 cursor-pointer select-none group origin-bottom-right"
+                className="hidden lg:block absolute -top-[35px] right-[5px] sm:-top-[48px] sm:right-[15px] md:-top-[58px] md:right-[20px] lg:-top-[68px] lg:right-[25px] z-30 cursor-pointer select-none group origin-bottom-right"
                 title="Choose a department & buy charts"
               >
                 {/* Radiant Glowing Background Halo */}
-                <div className="absolute -inset-3 rounded-2xl bg-gradient-to-r from-red-600/70 via-[#FF4A00]/80 to-red-600/70 blur-2xl opacity-80 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
+                <div className="absolute -inset-2.5 rounded-xl bg-gradient-to-r from-red-600/70 via-[#FF4A00]/80 to-red-600/70 blur-xl opacity-75 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
 
                 {/* Origami Structure Container */}
-                <div className="relative flex flex-col items-center drop-shadow-[0_18px_35px_rgba(0,0,0,0.55)] group-hover:drop-shadow-[0_25px_45px_rgba(220,38,38,0.65)] transition-all duration-300">
+                <div className="relative flex flex-col items-center drop-shadow-[0_12px_25px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_20px_35px_rgba(220,38,38,0.6)] transition-all duration-300">
                   
                   {/* Top Dark Folded Tab ("BUY" with Highlight) */}
-                  <div className="relative z-20 self-start ml-2 sm:ml-3">
+                  <div className="relative z-20 self-start ml-1.5 sm:ml-2.5">
                     {/* Folded Corner Dog-Ear */}
-                    <div className="absolute -left-2.5 sm:-left-3 top-0 w-0 h-0 border-t-[9px] sm:border-t-[12px] border-t-transparent border-r-[9px] sm:border-r-[12px] border-r-[#0A0A0C] border-b-[9px] sm:border-b-[12px] border-b-[#0A0A0C]" />
+                    <div className="absolute -left-2 sm:-left-2.5 top-0 w-0 h-0 border-t-[7px] sm:border-t-[9px] border-t-transparent border-r-[7px] sm:border-r-[9px] border-r-[#0A0A0C] border-b-[7px] sm:border-b-[9px] border-b-[#0A0A0C]" />
                     
-                    <div className="bg-[#141417] font-black text-xs sm:text-base md:text-lg tracking-[0.2em] uppercase px-4 sm:px-6 py-1 sm:py-1.5 rounded-t-md shadow-lg border-t-2 border-x-2 border-white/40 flex items-center justify-center gap-2">
+                    <div className="bg-[#141417] font-black text-[10px] sm:text-xs md:text-sm tracking-[0.18em] uppercase px-3 sm:px-4 py-0.5 sm:py-1 rounded-t-sm shadow-md border-t border-x border-white/40 flex items-center justify-center gap-1.5">
                       <motion.span
                         animate={{
-                          scale: [1, 1.25, 1],
-                          opacity: [1, 0.4, 1],
+                          scale: [1, 1.2, 1],
+                          opacity: [1, 0.45, 1],
                           filter: [
-                            'drop-shadow(0 0 3px #FFE600)',
-                            'drop-shadow(0 0 12px #FFE600)',
-                            'drop-shadow(0 0 3px #FFE600)',
+                            'drop-shadow(0 0 2px #FFE600)',
+                            'drop-shadow(0 0 8px #FFE600)',
+                            'drop-shadow(0 0 2px #FFE600)',
                           ],
                         }}
                         transition={{
@@ -358,41 +437,41 @@ export default function NewHeroBanner({ onStartFree, onSeeHowItWorks, onSignIn }
                           duration: 1.1,
                           ease: 'easeInOut',
                         }}
-                        className="inline-block text-[#FFE600] font-black tracking-[0.2em]"
+                        className="inline-block text-[#FFE600] font-black tracking-[0.18em]"
                       >
                         BUY
                       </motion.span>
-                      <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[#FFE600] animate-ping" />
+                      <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-[#FFE600] animate-ping" />
                     </div>
                   </div>
 
                   {/* Main Red-Orange Banner ("CHARTS NOW") */}
-                  <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-4 sm:px-6 py-3 sm:py-4 shadow-xl border-t border-white/40 overflow-hidden w-[155px] sm:w-[190px] md:w-[225px] text-center rounded-sm">
+                  <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg border-t border-white/40 overflow-hidden w-[125px] sm:w-[150px] md:w-[175px] text-center rounded-sm">
                     {/* Diagonal Glass Sweep Reflection */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
                     <div className="flex flex-col items-center leading-[0.9]">
-                      <span className="font-black text-2xl sm:text-3xl md:text-4xl tracking-tighter uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                      <span className="font-black text-lg sm:text-xl md:text-2xl tracking-tighter uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                         CHARTS
                       </span>
-                      <span className="font-black text-3xl sm:text-4xl md:text-5xl tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mt-0.5 sm:mt-1">
+                      <span className="font-black text-xl sm:text-2xl md:text-3xl tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mt-0.5">
                         NOW
                       </span>
                     </div>
 
                     {/* Sub-badge Highlight */}
-                    <div className="mt-2 pt-1.5 border-t border-white/30 flex items-center justify-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase font-extrabold text-white/95 tracking-wider">
-                      <span className="h-1.5 w-1.5 rounded-full bg-yellow-300 animate-ping" />
+                    <div className="mt-1.5 pt-1 border-t border-white/30 flex items-center justify-center gap-1 font-mono text-[7.5px] sm:text-[8.5px] uppercase font-extrabold text-white/95 tracking-wider">
+                      <span className="h-1 w-1 rounded-full bg-yellow-300 animate-ping" />
                       <span>Instant EHR Access</span>
                     </div>
                   </div>
 
                   {/* Bottom 3D Origami Fold Triangle */}
-                  <div className="self-end mr-3 sm:mr-5 flex">
+                  <div className="self-end mr-2.5 sm:mr-4 flex">
                     {/* Shadow Fold Triangle */}
-                    <div className="w-0 h-0 border-l-[14px] sm:border-l-[18px] border-l-transparent border-t-[14px] sm:border-t-[18px] border-t-[#6B1414]" />
+                    <div className="w-0 h-0 border-l-[10px] sm:border-l-[14px] border-l-transparent border-t-[10px] sm:border-t-[14px] border-t-[#6B1414]" />
                     {/* Projecting Ribbon Point */}
-                    <div className="w-0 h-0 border-r-[18px] sm:border-r-[26px] border-r-transparent border-t-[14px] sm:border-t-[18px] border-t-[#B91C1C]" />
+                    <div className="w-0 h-0 border-r-[14px] sm:border-r-[20px] border-r-transparent border-t-[10px] sm:border-t-[14px] border-t-[#B91C1C]" />
                   </div>
 
                 </div>
@@ -404,40 +483,40 @@ export default function NewHeroBanner({ onStartFree, onSeeHowItWorks, onSignIn }
               <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 15 }}
                 animate={{
-                  y: [0, 6, 0],
-                  rotate: [1, -1, 1],
+                  y: [0, 5, 0],
+                  rotate: [0.8, -0.8, 0.8],
                 }}
                 transition={{
                   y: { repeat: Infinity, duration: 3.8, ease: 'easeInOut' },
                   rotate: { repeat: Infinity, duration: 5.2, ease: 'easeInOut' },
                   scale: { type: 'spring', stiffness: 350, damping: 22 },
                 }}
-                whileHover={{ scale: 1.1, y: 0, rotate: 0 }}
+                whileHover={{ scale: 1.08, y: 0, rotate: 0 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={scrollToDepartments}
-                className="absolute -bottom-[15px] -left-[5px] sm:-bottom-[25px] sm:-left-[15px] md:-bottom-[35px] md:-left-[20px] lg:-bottom-[40px] lg:-left-[25px] z-30 cursor-pointer select-none group origin-top-left"
+                className="hidden lg:block absolute -bottom-[10px] -left-[5px] sm:-bottom-[18px] sm:-left-[12px] md:-bottom-[24px] md:-left-[18px] lg:-bottom-[28px] lg:-left-[20px] z-30 cursor-pointer select-none group origin-top-left"
                 title="Choose a department & buy charts"
               >
                 {/* Radiant Glowing Background Halo */}
-                <div className="absolute -inset-3 rounded-2xl bg-gradient-to-r from-orange-500/70 via-[#FF6B00]/80 to-amber-500/70 blur-2xl opacity-80 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
+                <div className="absolute -inset-2.5 rounded-xl bg-gradient-to-r from-orange-500/70 via-[#FF6B00]/80 to-amber-500/70 blur-xl opacity-75 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
 
                 {/* Origami Structure Container */}
-                <div className="relative flex flex-col items-center drop-shadow-[0_18px_35px_rgba(0,0,0,0.4)] group-hover:drop-shadow-[0_25px_45px_rgba(242,103,34,0.6)] transition-all duration-300">
+                <div className="relative flex flex-col items-center drop-shadow-[0_12px_25px_rgba(0,0,0,0.4)] group-hover:drop-shadow-[0_20px_35px_rgba(242,103,34,0.55)] transition-all duration-300">
                   
                   {/* Top Dark Folded Tab ("TRY 5") */}
-                  <div className="relative z-20 self-start ml-2 sm:ml-3">
+                  <div className="relative z-20 self-start ml-1.5 sm:ml-2.5">
                     {/* Folded Corner Dog-Ear */}
-                    <div className="absolute -left-2.5 sm:-left-3 top-0 w-0 h-0 border-t-[9px] sm:border-t-[12px] border-t-transparent border-r-[9px] sm:border-r-[12px] border-r-[#0A0A0C] border-b-[9px] sm:border-b-[12px] border-b-[#0A0A0C]" />
+                    <div className="absolute -left-2 sm:-left-2.5 top-0 w-0 h-0 border-t-[7px] sm:border-t-[9px] border-t-transparent border-r-[7px] sm:border-r-[9px] border-r-[#0A0A0C] border-b-[7px] sm:border-b-[9px] border-b-[#0A0A0C]" />
                     
-                    <div className="bg-[#141417] font-black text-[11px] sm:text-xs md:text-sm tracking-[0.18em] uppercase px-3.5 sm:px-5 py-1 sm:py-1.5 rounded-t-md shadow-lg border-t-2 border-x-2 border-white/40 flex items-center justify-center gap-1.5">
+                    <div className="bg-[#141417] font-black text-[9px] sm:text-[11px] md:text-xs tracking-[0.16em] uppercase px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-t-sm shadow-md border-t border-x border-white/40 flex items-center justify-center gap-1">
                       <motion.div
                         animate={{
-                          scale: [1, 1.2, 1],
+                          scale: [1, 1.15, 1],
                           opacity: [1, 0.5, 1],
                           filter: [
-                            'drop-shadow(0 0 3px #FFE600)',
-                            'drop-shadow(0 0 12px #FFE600)',
-                            'drop-shadow(0 0 3px #FFE600)',
+                            'drop-shadow(0 0 2px #FFE600)',
+                            'drop-shadow(0 0 8px #FFE600)',
+                            'drop-shadow(0 0 2px #FFE600)',
                           ],
                         }}
                         transition={{
@@ -445,50 +524,50 @@ export default function NewHeroBanner({ onStartFree, onSeeHowItWorks, onSignIn }
                           duration: 1.2,
                           ease: 'easeInOut',
                         }}
-                        className="flex items-center gap-1 text-[#FFE600] font-black tracking-[0.16em]"
+                        className="flex items-center gap-1 text-[#FFE600] font-black tracking-[0.14em]"
                       >
                         <span>TRY</span>
-                        <span className="text-base sm:text-lg md:text-xl font-black text-yellow-300 leading-none drop-shadow-[0_0_10px_#FFE600]">
+                        <span className="text-sm sm:text-base md:text-lg font-black text-yellow-300 leading-none drop-shadow-[0_0_8px_#FFE600]">
                           5
                         </span>
                       </motion.div>
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#FFE600] animate-ping" />
+                      <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-[#FFE600] animate-ping" />
                     </div>
                   </div>
 
                   {/* Main Orange-Red Origami Card ("FREE TRIAL CHARTS" with Giant 5) */}
-                  <div className="relative z-10 bg-gradient-to-br from-[#FF6B00] via-[#F26722] to-[#D94F00] text-white px-3.5 sm:px-5 py-2.5 sm:py-3.5 shadow-xl border-t border-white/40 overflow-hidden w-[155px] sm:w-[190px] md:w-[225px] text-center rounded-sm">
+                  <div className="relative z-10 bg-gradient-to-br from-[#FF6B00] via-[#F26722] to-[#D94F00] text-white px-2.5 sm:px-3.5 py-2 sm:py-2.5 shadow-lg border-t border-white/40 overflow-hidden w-[125px] sm:w-[150px] md:w-[175px] text-center rounded-sm">
                     {/* Diagonal Glass Sweep Reflection */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
-                    <div className="flex items-center justify-center gap-2 sm:gap-2.5 leading-[0.88]">
+                    <div className="flex items-center justify-center gap-1.5 sm:gap-2 leading-[0.88]">
                       {/* Giant Number 5 */}
-                      <span className="font-black text-4xl sm:text-5xl md:text-6xl text-yellow-300 drop-shadow-[0_3px_10px_rgba(0,0,0,0.6)] leading-none inline-block">
+                      <span className="font-black text-3xl sm:text-4xl md:text-5xl text-yellow-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] leading-none inline-block">
                         5
                       </span>
                       <div className="flex flex-col items-start text-left leading-[0.9]">
-                        <span className="font-black text-base sm:text-lg md:text-xl tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                        <span className="font-black text-xs sm:text-sm md:text-base tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                           FREE TRIAL
                         </span>
-                        <span className="font-black text-lg sm:text-xl md:text-2xl tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mt-0.5">
+                        <span className="font-black text-sm sm:text-base md:text-lg tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mt-0.5">
                           CHARTS
                         </span>
                       </div>
                     </div>
 
                     {/* Sub-badge Highlight */}
-                    <div className="mt-2 pt-1.5 border-t border-white/30 flex items-center justify-center gap-1 font-mono text-[8px] sm:text-[9px] uppercase font-extrabold text-white/95 tracking-wider">
-                      <span className="h-1.5 w-1.5 rounded-full bg-yellow-300 animate-ping" />
+                    <div className="mt-1.5 pt-1 border-t border-white/30 flex items-center justify-center gap-1 font-mono text-[7px] sm:text-[8px] uppercase font-extrabold text-white/95 tracking-wider">
+                      <span className="h-1 w-1 rounded-full bg-yellow-300 animate-ping" />
                       <span>Instant Access • No Card</span>
                     </div>
                   </div>
 
                   {/* Bottom 3D Origami Fold Triangle */}
-                  <div className="self-end mr-3 sm:mr-4 flex">
+                  <div className="self-end mr-2.5 sm:mr-3.5 flex">
                     {/* Shadow Fold Triangle */}
-                    <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] border-l-transparent border-t-[12px] sm:border-t-[16px] border-t-[#8C2C00]" />
+                    <div className="w-0 h-0 border-l-[10px] sm:border-l-[14px] border-l-transparent border-t-[10px] sm:border-t-[14px] border-t-[#8C2C00]" />
                     {/* Projecting Ribbon Point */}
-                    <div className="w-0 h-0 border-r-[16px] sm:border-r-[22px] border-r-transparent border-t-[12px] sm:border-t-[16px] border-t-[#D94F00]" />
+                    <div className="w-0 h-0 border-r-[14px] sm:border-r-[18px] border-r-transparent border-t-[10px] sm:border-t-[14px] border-t-[#D94F00]" />
                   </div>
 
                 </div>

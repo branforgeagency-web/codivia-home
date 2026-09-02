@@ -192,6 +192,8 @@ export default function App() {
         deptId={activeDeptId}
         onBack={handleBackToHome}
         onCheckout={handlePay}
+        user={authState.user || userRef.current}
+        onSignOut={handleSignOut}
       />
     )
   }
