@@ -63,17 +63,22 @@ body {
 }
 
 /* ==========================================================================
-   Interactive Department Cards (Uiverse.io inspired with Codivia design language)
+   Interactive Department Cards (Creative Medical-Tech Uiverse Design)
    ========================================================================== */
 .dept-uicard {
   width: 300px;
-  height: 420px;
-  background: white;
+  height: 425px;
+  background-color: #FFFFFF;
+  background-image: 
+    radial-gradient(circle at 50% 30%, rgba(241, 90, 36, 0.12) 0%, transparent 65%),
+    radial-gradient(circle, rgba(241, 90, 36, 0.06) 1px, transparent 1px),
+    linear-gradient(to top, #FFEBDD 0%, #FFF4ED 38%, #FFF9F6 72%, #FFFFFF 100%);
+  background-size: 100% 100%, 18px 18px, 100% 100%;
   border-radius: 32px;
   padding: 4px;
   position: relative;
-  box-shadow: 0px 20px 40px -15px rgba(241, 90, 36, 0.12), 0 2px 10px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(241, 90, 36, 0.15);
+  box-shadow: 0px 22px 45px -15px rgba(241, 90, 36, 0.18), 0 4px 16px rgba(0, 0, 0, 0.03);
+  border: 1.5px solid rgba(241, 90, 36, 0.22);
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
   overflow: hidden;
   cursor: pointer;
@@ -82,22 +87,27 @@ body {
 
 @media (min-width: 640px) {
   .dept-uicard {
-    width: 320px;
-    height: 440px;
+    width: 325px;
+    height: 445px;
   }
 }
 
 .dept-uicard:hover {
-  border-top-left-radius: 55px;
+  background-image: 
+    radial-gradient(circle at 50% 30%, rgba(241, 90, 36, 0.18) 0%, transparent 65%),
+    radial-gradient(circle, rgba(241, 90, 36, 0.08) 1px, transparent 1px),
+    linear-gradient(to top, #FFE3D4 0%, #FFEFE7 35%, #FFF7F2 70%, #FFFFFF 100%);
+  border-top-left-radius: 56px;
   border-color: #F15A24;
-  box-shadow: 0px 30px 60px -20px rgba(241, 90, 36, 0.25);
-  transform: translateY(-5px);
+  box-shadow: 0px 32px 65px -20px rgba(241, 90, 36, 0.35), 0 0 0 1px rgba(241, 90, 36, 0.2);
+  transform: translateY(-8px);
 }
 
 .dept-uicard.is-selected {
   border-color: #F15A24;
-  box-shadow: 0px 25px 50px -15px rgba(241, 90, 36, 0.3);
-  ring: 2px solid #F15A24;
+  box-shadow: 0px 28px 55px -15px rgba(241, 90, 36, 0.32);
+  outline: 2px solid #F15A24;
+  outline-offset: 2px;
 }
 
 .dept-uicard .top-badge {
@@ -118,7 +128,7 @@ body {
   z-index: 1;
   border: 0px solid #F15A24;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 35%, rgba(241, 90, 36, 0.06), transparent 70%);
+  background: radial-gradient(circle at 50% 32%, rgba(241, 90, 36, 0.15) 0%, rgba(255, 235, 225, 0.4) 45%, transparent 75%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,14 +139,14 @@ body {
 
 .dept-uicard .profile-pic .dept-img {
   width: 100%;
-  height: 185px;
+  height: 195px;
   object-fit: contain;
-  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.12));
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .dept-uicard .profile-pic .dept-title-front {
-  font-size: 1.25rem;
+  font-size: 1.28rem;
   font-weight: 900;
   color: #1E293B;
   text-align: center;
@@ -150,24 +160,26 @@ body {
   font-size: 0.75rem;
   font-weight: 800;
   color: #F15A24;
-  background: rgba(241, 90, 36, 0.1);
-  padding: 0.2rem 0.75rem;
+  background: rgba(241, 90, 36, 0.12);
+  border: 1px solid rgba(241, 90, 36, 0.25);
+  padding: 0.25rem 0.85rem;
   border-radius: 9999px;
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 2px 6px rgba(241, 90, 36, 0.08);
   transition: all 0.3s ease;
 }
 
 .dept-uicard:hover .profile-pic {
-  width: 86px;
-  height: 86px;
+  width: 88px;
+  height: 88px;
   aspect-ratio: 1;
   top: 12px;
   left: 12px;
   border-radius: 50%;
   z-index: 3;
-  border: 4px solid #F15A24;
+  border: 3.5px solid #F15A24;
   background: white;
-  box-shadow: 0px 10px 25px rgba(241, 90, 36, 0.22);
+  box-shadow: 0px 12px 28px rgba(241, 90, 36, 0.28);
   padding: 6px;
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), z-index 0.5s ease 0.1s;
 }
@@ -175,7 +187,7 @@ body {
 .dept-uicard:hover .profile-pic .dept-img {
   width: 100%;
   height: 100%;
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .dept-uicard:hover .profile-pic .dept-title-front,
@@ -190,12 +202,14 @@ body {
   bottom: 4px;
   left: 4px;
   right: 4px;
-  background: linear-gradient(135deg, #FFF7F4 0%, #FFEFE8 100%);
-  border: 1px solid rgba(241, 90, 36, 0.25);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 245, 240, 0.94) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(241, 90, 36, 0.25);
   top: 80%;
   border-radius: 28px;
   z-index: 2;
-  box-shadow: inset 0px 3px 6px rgba(241, 90, 36, 0.08);
+  box-shadow: 0px -4px 15px rgba(241, 90, 36, 0.06), inset 0px 2px 4px rgba(255, 255, 255, 0.8);
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
   display: flex;
@@ -205,9 +219,11 @@ body {
 }
 
 .dept-uicard:hover .bottom {
-  top: 18%;
-  border-radius: 80px 28px 28px 28px;
-  padding: 1rem 1.15rem 1rem 1.15rem;
+  top: 17%;
+  border-radius: 82px 28px 28px 28px;
+  padding: 1rem 1.15rem 1.1rem 1.15rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 248, 244, 0.96) 100%);
+  box-shadow: 0px -8px 25px rgba(241, 90, 36, 0.12), inset 0px 2px 4px rgba(255, 255, 255, 0.9);
   transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.15s;
 }
 
@@ -225,7 +241,7 @@ body {
 
 .dept-uicard .bottom .content {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(14px);
   transition: all 0.35s ease 0.05s;
   height: 100%;
   display: flex;
@@ -239,3 +255,69 @@ body {
   transition: all 0.4s ease 0.25s;
 }
 
+
+/* ==========================================================================
+   06 Chromia — brushed-metal letters with a passing sheen
+   Markup: <span class="fx-chrome">text</span>
+   Colour tokens — override to re-skin the effect:
+     --ink    main text colour (defaults to currentColor)
+     --ink-2  primary accent   --ink-3  secondary accent
+   ========================================================================== */
+:root {
+  --ink: currentColor;
+  --ink-2: #FF4FD8;
+  --ink-3: #4FF8FF;
+}
+
+.fx-chrome {
+  font: 600 32px/1.1 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  /* Fallback solid colour first, in case background-clip:text or
+     color-mix() isn't supported — without this the text goes fully
+     transparent and invisible instead of just losing the sheen. */
+  color: var(--ink);
+  background: linear-gradient(
+      105deg,
+      color-mix(in srgb, var(--ink) 40%, transparent) 0 38%,
+      var(--ink) 47%,
+      rgba(255, 255, 255, 0.8) 50%,
+      var(--ink) 53%,
+      color-mix(in srgb, var(--ink) 40%, transparent) 62% 100%
+    )
+    0 0 / 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: fx-chrome 2.8s ease-in-out infinite;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .fx-chrome {
+    color: transparent;
+  }
+}
+
+@keyframes fx-chrome {
+  0% {
+    background-position: 130% 0;
+  }
+  60%,
+  100% {
+    background-position: -130% 0;
+  }
+}
+
+/* Hero headline variant: keep the site's own type scale instead of Chromia's
+   built-in monospace font/size, and let the sheen ride on the inherited ink
+   colour. Also offer a slight animation delay for staggering multiple runs. */
+.fx-chrome.fx-chrome-hero {
+  font: inherit;
+  letter-spacing: inherit;
+  /* Pin to a concrete colour instead of currentColor so the sheen is
+     guaranteed visible regardless of what inherits down to this span.
+     Uses the site's accent orange. */
+  --ink: #F26722;
+}
+
+.fx-chrome.fx-chrome-delay {
+  animation-delay: 0.45s;
+}

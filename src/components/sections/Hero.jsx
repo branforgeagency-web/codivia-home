@@ -234,9 +234,9 @@ export default function Hero({ onStartFree, onSeeHowItWorks }) {
                 opacity: { duration: 0.6, delay: 0.4 },
               }}
               onClick={() => {
-                const pricingEl = document.getElementById('pricing')
-                if (pricingEl) {
-                  pricingEl.scrollIntoView({ behavior: 'smooth' })
+                const departmentsEl = document.getElementById('departments')
+                if (departmentsEl) {
+                  departmentsEl.scrollIntoView({ behavior: 'smooth' })
                 } else if (onStartFree) {
                   onStartFree()
                 }

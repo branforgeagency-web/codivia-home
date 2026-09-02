@@ -62,7 +62,12 @@ const CODING_OPTIONS = {
   ],
 }
 
-export default function CodingTeaser() {
+export default function CodingTeaser({ onStartFree, onSignIn }) {
+  const scrollToDepartments = () => {
+    const el = document.getElementById('departments')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const [icdChoice, setIcdChoice] = useState(null)
   const [cptChoice, setCptChoice] = useState(null)
   const [checked, setChecked] = useState(false)
@@ -136,6 +141,7 @@ export default function CodingTeaser() {
           >
             Experience the actual Codivia platform interface running live on your screen. Select the diagnosis and procedure codes, then click <strong>Validate &amp; score</strong> to test your instincts.
           </motion.p>
+
         </div>
 
         {/* =========================================================================
@@ -500,6 +506,99 @@ export default function CodingTeaser() {
             {/* Monitor Base Plate */}
             <div className="h-3.5 sm:h-4 w-60 sm:w-80 rounded-full bg-gradient-to-r from-[#27272A] via-[#52525B] to-[#27272A] border border-white/20 shadow-[0_20px_35px_rgba(0,0,0,0.3)]" />
           </div>
+
+          {/* Bottom Action Button: Try 5 Free Trial Charts */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 text-center flex flex-col items-center justify-center gap-3"
+          >
+            <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-charcoal/60">
+              Want to code authentic inpatient &amp; outpatient cases?
+            </p>
+            {/* 3D Origami "BUY CHARTS NOW" Badge — Matching User's Design Exactly */}
+            <motion.div
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={scrollToDepartments}
+              className="cursor-pointer group select-none mt-2"
+              title="Choose a department & buy charts"
+            >
+              {/* Origami Structure Container */}
+              <div className="relative flex flex-col items-center drop-shadow-[0_22px_45px_rgba(0,0,0,0.38)] group-hover:drop-shadow-[0_30px_60px_rgba(220,38,38,0.58)] transition-all duration-300">
+                
+                {/* Top Dark Folded Tab ("BUY" with Glowing Highlight & Dog-Ear) */}
+                <div className="relative z-20 self-start ml-2 sm:ml-4">
+                  {/* Folded Corner Dog-Ear */}
+                  <div className="absolute -left-3.5 sm:-left-4 top-0 w-0 h-0 border-t-[12px] sm:border-t-[15px] border-t-transparent border-r-[12px] sm:border-r-[15px] border-r-[#0A0A0C] border-b-[12px] sm:border-b-[15px] border-b-[#0A0A0C]" />
+                  
+                  <div className="bg-[#141417] font-black text-sm sm:text-lg md:text-xl tracking-[0.22em] uppercase px-6 sm:px-8 py-1.5 sm:py-2 rounded-t-lg shadow-xl border-t-2 border-x-2 border-white/40 flex items-center justify-center gap-2">
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [1, 0.5, 1],
+                        filter: [
+                          'drop-shadow(0 0 4px #FFE600)',
+                          'drop-shadow(0 0 16px #FFE600)',
+                          'drop-shadow(0 0 4px #FFE600)',
+                        ],
+                      }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1.2,
+                        ease: 'easeInOut',
+                      }}
+                      className="flex items-center gap-1.5 text-[#FFE600] font-black tracking-[0.2em]"
+                    >
+                      <span>TRY</span>
+                      <span className="text-2xl sm:text-3xl md:text-4xl font-black text-yellow-300 leading-none drop-shadow-[0_0_12px_#FFE600]">
+                        5
+                      </span>
+                    </motion.div>
+                    <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FFE600] animate-ping" />
+                  </div>
+                </div>
+
+                {/* Main Red Banner ("5 FREE TRIAL CHARTS" with Giant Number 5) */}
+                <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-6 sm:px-9 py-5 sm:py-6 shadow-2xl border-t border-white/40 overflow-hidden w-[250px] sm:w-[320px] md:w-[360px] text-center rounded-sm">
+                  {/* Diagonal Glass Sweep Reflection */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+
+                  <div className="flex items-center justify-center gap-2.5 sm:gap-3.5 leading-[0.88]">
+                    {/* Extra Giant Number 5 */}
+                    <span className="font-black text-6xl sm:text-7xl md:text-8xl text-yellow-300 drop-shadow-[0_5px_15px_rgba(0,0,0,0.7)] leading-none inline-block transform -translate-y-0.5">
+                      5
+                    </span>
+                    <div className="flex flex-col items-start text-left leading-[0.9]">
+                      <span className="font-black text-2xl sm:text-3xl md:text-4xl tracking-tight uppercase drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
+                        FREE TRIAL
+                      </span>
+                      <span className="font-black text-3xl sm:text-4xl md:text-5xl tracking-tight uppercase drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)] mt-0.5 sm:mt-1">
+                        CHARTS
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Sub-badge Highlight */}
+                  <div className="mt-3.5 pt-2.5 border-t border-white/30 flex items-center justify-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase font-extrabold text-white/95 tracking-wider">
+                    <span className="h-2 w-2 rounded-full bg-yellow-300 animate-ping" />
+                    <span>Instant EHR Access • Free Practice</span>
+                  </div>
+                </div>
+
+                {/* Bottom 3D Origami Fold Triangle */}
+                <div className="self-end mr-5 sm:mr-8 flex">
+                  {/* Shadow Fold Triangle */}
+                  <div className="w-0 h-0 border-l-[18px] sm:border-l-[24px] border-l-transparent border-t-[18px] sm:border-t-[24px] border-t-[#6B1414]" />
+                  {/* Projecting Ribbon Point */}
+                  <div className="w-0 h-0 border-r-[24px] sm:border-r-[34px] border-r-transparent border-t-[18px] sm:border-t-[24px] border-t-[#B91C1C]" />
+                </div>
+
+              </div>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

@@ -236,10 +236,10 @@ export default function HowCodiviaWorks() {
           </motion.p>
         </div>
 
-        {/* 2. Video Player Component with 50px Margin (Starts Paused by Default) */}
-        <div className="my-[50px] relative">
+        {/* 2. Video Player Component with spacing for outer badge */}
+        <div className="mt-[70px] sm:mt-[95px] mb-[50px] relative">
           
-          {/* Floating Animated Origami "BUY CHARTS NOW" Badge (Hero Scale ~20% Screen Width) */}
+          {/* Floating Animated Origami "BUY CHARTS NOW" Badge (Moved 100px right & 100px up) */}
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 15 }}
             whileInView={{ scale: 1, opacity: 1, y: 0 }}
@@ -256,57 +256,76 @@ export default function HowCodiviaWorks() {
               scale: { type: 'spring', stiffness: 350, damping: 22 },
             }}
             onClick={() => {
-              const pricingEl = document.getElementById('pricing')
-              if (pricingEl) {
-                pricingEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              const departmentsEl = document.getElementById('departments')
+              if (departmentsEl) {
+                departmentsEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
               }
             }}
-            className="absolute -top-10 -right-3 sm:-top-14 sm:-right-6 md:-top-16 md:-right-8 z-30 cursor-pointer select-none group origin-bottom-right"
-            title="Buy Practice Charts Now"
+            className="absolute -top-[55px] -right-[95px] sm:-top-[75px] sm:-right-[85px] md:-top-[85px] md:-right-[75px] lg:-top-[95px] lg:-right-[65px] z-30 cursor-pointer select-none group origin-bottom-right scale-[0.5] sm:scale-[0.6] md:scale-[0.68] lg:scale-[0.75]"
+            title="Choose a department & buy charts"
           >
             {/* Radiant Glowing Background Halo (Substantial coverage) */}
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-red-600/70 via-[#FF4A00]/80 to-red-600/70 blur-3xl opacity-85 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
+            <div className="absolute -inset-3 rounded-2xl bg-gradient-to-r from-red-600/70 via-[#FF4A00]/80 to-red-600/70 blur-2xl opacity-80 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 pointer-events-none" />
 
-            {/* Origami Structure Container (Scaled to 20% Screen Width) */}
-            <div className="relative flex flex-col items-center drop-shadow-[0_25px_45px_rgba(0,0,0,0.65)] group-hover:drop-shadow-[0_35px_60px_rgba(220,38,38,0.7)] transition-all duration-300">
+            {/* Origami Structure Container (Compact Scaled Version) */}
+            <div className="relative flex flex-col items-center drop-shadow-[0_15px_30px_rgba(0,0,0,0.55)] group-hover:drop-shadow-[0_22px_40px_rgba(220,38,38,0.65)] transition-all duration-300">
               
-              {/* Top Dark Folded Tab ("BUY") */}
-              <div className="relative z-20 self-start ml-3 sm:ml-5">
+              {/* Top Dark Folded Tab ("BUY" with Highlight) */}
+              <div className="relative z-20 self-start ml-2 sm:ml-3">
                 {/* Folded Corner Dog-Ear */}
-                <div className="absolute -left-3 top-0 w-0 h-0 border-t-[10px] sm:border-t-[12px] border-t-transparent border-r-[10px] sm:border-r-[12px] border-r-[#0A0A0C] border-b-[10px] sm:border-b-[12px] border-b-[#0A0A0C]" />
+                <div className="absolute -left-2.5 sm:-left-3 top-0 w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-transparent border-r-[8px] sm:border-r-[10px] border-r-[#0A0A0C] border-b-[8px] sm:border-b-[10px] border-b-[#0A0A0C]" />
                 
-                <div className="bg-[#141417] text-white font-black text-xs sm:text-sm md:text-base tracking-[0.25em] uppercase px-5 sm:px-7 py-1.5 sm:py-2 rounded-t-md shadow-md border-t border-x border-white/30">
-                  BUY
+                <div className="bg-[#141417] font-black text-xs sm:text-sm md:text-base tracking-[0.18em] uppercase px-3.5 sm:px-5 py-1 sm:py-1.5 rounded-t-md shadow-lg border-t-2 border-x-2 border-white/40 flex items-center justify-center gap-1.5">
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.25, 1],
+                      opacity: [1, 0.4, 1],
+                      filter: [
+                        'drop-shadow(0 0 3px #FFE600)',
+                        'drop-shadow(0 0 10px #FFE600)',
+                        'drop-shadow(0 0 3px #FFE600)',
+                      ],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.1,
+                      ease: 'easeInOut',
+                    }}
+                    className="inline-block text-[#FFE600] font-black tracking-[0.18em]"
+                  >
+                    BUY
+                  </motion.span>
+                  <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-[#FFE600] animate-ping" />
                 </div>
               </div>
 
-              {/* Main Red-Orange Banner ("CHARTS NOW") */}
-              <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-6 sm:px-9 py-4 sm:py-6 shadow-2xl border-t border-white/40 overflow-hidden w-[210px] sm:w-[270px] md:w-[320px] text-center rounded-sm">
+              {/* Main Red-Orange Banner ("CHARTS NOW" - Smaller Proportions) */}
+              <div className="relative z-10 bg-gradient-to-br from-[#DC2626] via-[#EF4444] to-[#B91C1C] text-white px-3.5 sm:px-5 py-2.5 sm:py-3.5 shadow-xl border-t border-white/40 overflow-hidden w-[145px] sm:w-[175px] md:w-[205px] text-center rounded-sm">
                 {/* Diagonal Glass Sweep Reflection */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
                 <div className="flex flex-col items-center leading-[0.9]">
-                  <span className="font-black text-3xl sm:text-4xl md:text-5xl tracking-tighter uppercase drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
+                  <span className="font-black text-xl sm:text-2xl md:text-3xl tracking-tighter uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                     CHARTS
                   </span>
-                  <span className="font-black text-4xl sm:text-5xl md:text-6xl tracking-tight uppercase drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)] mt-1 sm:mt-1.5">
+                  <span className="font-black text-2xl sm:text-3xl md:text-4xl tracking-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] mt-0.5 sm:mt-1">
                     NOW
                   </span>
                 </div>
 
                 {/* Sub-badge Highlight */}
-                <div className="mt-3 pt-2.5 border-t border-white/30 flex items-center justify-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase font-extrabold text-white/95 tracking-wider">
-                  <span className="h-2 w-2 rounded-full bg-yellow-300 animate-ping" />
+                <div className="mt-2 pt-1.5 border-t border-white/30 flex items-center justify-center gap-1 font-mono text-[8px] sm:text-[9px] uppercase font-extrabold text-white/95 tracking-wider">
+                  <span className="h-1.5 w-1.5 rounded-full bg-yellow-300 animate-ping" />
                   <span>Instant EHR Access</span>
                 </div>
               </div>
 
               {/* Bottom 3D Origami Fold Triangle */}
-              <div className="self-end mr-5 sm:mr-8 flex">
+              <div className="self-end mr-3 sm:mr-5 flex">
                 {/* Shadow Fold Triangle */}
-                <div className="w-0 h-0 border-l-[20px] sm:border-l-[26px] border-l-transparent border-t-[20px] sm:border-t-[26px] border-t-[#6B1414]" />
+                <div className="w-0 h-0 border-l-[12px] sm:border-l-[16px] border-l-transparent border-t-[12px] sm:border-t-[16px] border-t-[#6B1414]" />
                 {/* Projecting Ribbon Point */}
-                <div className="w-0 h-0 border-r-[26px] sm:border-r-[36px] border-r-transparent border-t-[20px] sm:border-t-[26px] border-t-[#B91C1C]" />
+                <div className="w-0 h-0 border-r-[16px] sm:border-r-[22px] border-r-transparent border-t-[12px] sm:border-t-[16px] border-t-[#B91C1C]" />
               </div>
 
             </div>
