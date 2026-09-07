@@ -12,13 +12,17 @@ import PricingGate from './components/sections/PricingGate.jsx'
 import TrustFAQ from './components/sections/TrustFAQ.jsx'
 import Footer from './components/sections/Footer.jsx'
 import DepartmentLandingPage from './components/department/DepartmentLandingPage.jsx'
+import { getStoredUser, getMe, signOutUser } from './lib/api.js'
+import { startEnrolmentPayment } from './lib/razorpay.js'
 
-// Firebase / Razorpay wiring is intentionally optional at runtime
+// Firebase wiring is optional at runtime if configured in environment
 let firebaseModule = null
-let razorpayModule = null
 
 export default function App() {
-  const [authState, setAuthState] = useState({ user: null, loading: true })
+  const [authState, setAuthState] = useState(() => ({
+    user: getStoredUser(),
+    loading: false,
+  }))
   const userRef = useRef(null)
   userRef.current = authState.user
 
@@ -51,16 +55,33 @@ export default function App() {
   }, [authState.user, authState.loading])
 
   useEffect(() => {
+    // 1. Restore MERN auth session
+    const stored = getStoredUser()
+    if (stored) {
+      setAuthState({ user: stored, loading: false })
+      getMe()
+        .then((res) => {
+          if (res?.user) {
+            setAuthState({ user: res.user, loading: false })
+          }
+        })
+        .catch(() => {})
+    }
+
+    // 2. Optional Firebase SDK listener if configured
     let unsubscribe = () => {}
     ;(async () => {
       try {
         firebaseModule = await import('./firebase.js')
-        unsubscribe = firebaseModule.watchAuthState((user) => {
-          setAuthState({ user, loading: false })
-        })
+        if (firebaseModule.isFirebaseConfigured) {
+          unsubscribe = firebaseModule.watchAuthState((user) => {
+            if (user) {
+              setAuthState({ user, loading: false })
+            }
+          })
+        }
       } catch (e) {
-        console.warn('Firebase module not initialized — configure .env.local to enable auth.', e)
-        setAuthState({ user: null, loading: false })
+        // Firebase optional fallback
       }
     })()
     return () => unsubscribe()
@@ -71,26 +92,12 @@ export default function App() {
   }, [])
 
   const handleStartFree = useCallback(async () => {
-    if (!firebaseModule) {
-      scrollTo(document.getElementById('demo'))
-      return
-    }
     if (!authState.user) {
-      try {
-        await firebaseModule.signInWithGoogle()
-        if (pendingDeptId) {
-          const targetDept = pendingDeptId
-          setPendingDeptId(null)
-          window.location.hash = `#/department/${targetDept}`
-          setActiveDeptId(targetDept)
-        }
-      } catch (err) {
-        console.error('Sign-in failed', err)
-      }
+      setSignInOpen(true)
     } else {
       scrollTo(document.getElementById('demo'))
     }
-  }, [authState.user, pendingDeptId, scrollTo])
+  }, [authState.user, scrollTo])
 
   const handleSeeHowItWorks = useCallback(() => {
     scrollTo(document.getElementById('how-it-works') || document.getElementById('journey'))
@@ -141,6 +148,7 @@ export default function App() {
   }, [pendingDeptId])
 
   const handleSignOut = useCallback(() => {
+    signOutUser()
     if (firebaseModule && firebaseModule.signOut) {
       firebaseModule.signOut()
     }
@@ -158,29 +166,19 @@ export default function App() {
   }, [])
 
   const handlePay = useCallback(async (tier) => {
-    if (!firebaseModule) {
-      alert(`Enrolment for ${tier?.name || 'Pro Practice Package'} initiated. Please configure Firebase to enable live payment processing!`)
+    if (!authState.user) {
+      setSignInOpen(true)
       return
     }
-    if (!authState.user) {
-      try {
-        await firebaseModule.signInWithGoogle()
-        return
-      } catch (err) {
-        console.error('Sign-in failed', err)
-        return
-      }
-    }
-    if (!razorpayModule) {
-      razorpayModule = await import('./lib/razorpay.js')
-    }
-    await razorpayModule.startEnrolmentPayment({
+
+    await startEnrolmentPayment({
+      user: authState.user,
       onSuccess: () => {
         alert('Payment confirmed! Your Codivia Coding Studio EHR Workspace access is now unlocked.')
       },
       onError: (err) => {
         console.error('Payment error', err)
-        alert('Something went wrong starting payment. Please try again.')
+        alert(err.message || 'Something went wrong starting payment. Please try again.')
       },
     })
   }, [authState.user])

@@ -52,23 +52,32 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
-export const auth = getAuth(app)
-export const db = getFirestore(app)
+export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.apiKey !== 'undefined')
+
+const app = isFirebaseConfigured ? (getApps().length ? getApp() : initializeApp(firebaseConfig)) : null
+export const auth = app ? getAuth(app) : null
+export const db = app ? getFirestore(app) : null
 
 const googleProvider = new GoogleAuthProvider()
 
 export function watchAuthState(callback) {
+  if (!auth) {
+    return () => {}
+  }
   return onAuthStateChanged(auth, callback)
 }
 
 export async function signInWithGoogle() {
+  if (!auth) {
+    throw new Error('Firebase Auth is not configured.')
+  }
   const result = await signInWithPopup(auth, googleProvider)
   await ensureStudentDoc(result.user)
   return result.user
 }
 
 export async function signOut() {
+  if (!auth) return Promise.resolve()
   return firebaseSignOut(auth)
 }
 
